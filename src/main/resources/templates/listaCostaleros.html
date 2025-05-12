@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Costaleros</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+<h1>Lista de Costaleros</h1>
+
+<!-- Mostrar mensajes -->
+<div th:if="${error}" style="color: red;">
+    <p th:text="${error}"></p>
+</div>
+<div th:if="${success}" style="color: green;">
+    <p th:text="${success}"></p>
+</div>
+
+<!-- Tabla de costaleros -->
+<table border="1">
+    <thead>
+    <tr>
+     	<th>Nombre de Usuario</th>
+        <th>DNI</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Nº Trabajadera</th>
+        <th>Altura</th>
+        <th>Nombre Paso</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="costalero : ${costaleros}">
+    <td th:text="${costalero.user.username}"></td> 
+        <td th:text="${costalero.dniCostalero}"></td>
+        <td th:text="${costalero.nombreCostalero}"></td>
+        <td th:text="${costalero.apellidoCostalero}"></td>
+        <td th:text="${costalero.numTrabajadera}"></td>
+        <td th:text="${costalero.tipoAltura}"></td>
+        <td th:text="${costalero.paso.nombreTitular}"></td>
+        <td>
+            <form th:action="@{/costaleros/editar}" method="get" style="display:inline;">
+                <input type="hidden" name="dni" th:value="${costalero.dniCostalero}">
+                <button type="submit">Editar</button>
+            </form>
+        </td>
+        <td>
+    <form th:action="@{/costaleros/eliminar}" method="get" style="display:inline;">
+        <input type="hidden" name="dni" th:value="${costalero.dniCostalero}">
+        <button type="submit" onclick="return confirm('¿Estás seguro de que quieres eliminar a este costalero?');">Eliminar</button>
+    </form>
+</td>
+        
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+
+<!-- Navegación -->
+<button onclick="goBack()">Volver a la página anterior</button>
+<button onclick="goHome()">Volver al menú principal</button>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    function goHome() {
+        window.location.href = '/';
+    }
+</script>
+</body>
+</html>

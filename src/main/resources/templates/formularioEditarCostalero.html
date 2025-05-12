@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Editar Costalero</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+<h1>Editar Costalero</h1>
+
+<form th:action="@{/costaleros/actualizar}" th:object="${costalero}" method="post">
+<!--  <label for="user">Nombre de Usuario:</label> -->
+<!--     <select th:field="*{user}" id="user"> -->
+<!--         <option value="" disabled selected>-- Selecciona tu nombre de usuario previamente creado --</option> -->
+<!--         <option th:each="u : ${usuarios}"  -->
+<!--                 th:value="${u.id}"  -->
+<!--                 th:text="${u.username}"> -->
+<!--         </option> -->
+<!--     </select> -->
+	<label>Nombre de Usuario:</label>
+	<input type="text" th:value="${costalero.user.username}" readonly />
+	<input type="hidden" th:field="*{user.id}" />
+    <label>DNI:</label>
+    <input type="text" th:field="*{dniCostalero}" readonly/>
+    <label>Nombre:</label>
+    <input type="text" th:field="*{nombreCostalero}" required/>
+    <label>Apellido:</label>
+    <input type="text" th:field="*{apellidoCostalero}" required/>
+    <label>Trabajadera Nº:</label>
+    <input type="number" th:field="*{numTrabajadera}" required/>
+    <label>Altura:</label>
+    <select th:field="*{tipoAltura}">
+        <option value="ALTA">ALTA</option>
+        <option value="BAJA">BAJA</option>
+    </select>
+	<label>Paso:</label>
+	<select th:field="*{paso.idPaso}" required>
+    <option th:each="p : ${pasos}" th:value="${p.idPaso}" th:text="${p.nombreTitular}">Paso</option>
+</select>
+    <input type="submit" value="Actualizar"/>
+</form>
+
+<button onclick="goBack()">Volver</button>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+</body>
+</html>

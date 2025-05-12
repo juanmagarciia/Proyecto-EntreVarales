@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Ver Capataz</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+<h1>Datos del Capataz</h1>
+
+<div th:if="${capataz != null}">
+  <p><strong>DNI:</strong> <span th:text="${capataz.dniCapataz}"></span></p>
+  <p><strong>Nombre:</strong> <span th:text="${capataz.nombreCapataz}"></span></p>
+  <p><strong>Apellido:</strong> <span th:text="${capataz.apellidoCapataz}"></span></p>
+  <p><strong>Puesto:</strong> <span th:text="${capataz.puestoCapataz}"></span></p>
+  <p><strong>Nombre de Usuario:</strong> <span th:text="${capataz.user.username}"></span></p>
+  <p><strong>Capataz/Contraguia del Paso:</strong> <span th:text="${capataz.paso.nombreTitular}"></span></p>
+</div>
+
+<div th:if="${error}">
+  <p style="color:red;" th:text="${error}"></p>
+</div>
+
+<!-- Navegación -->
+<button onclick="goBack()">Volver a la página anterior</button>
+<button onclick="goHome()">Volver al menú principal</button>
+
+<script>
+  function goBack() {
+    window.history.back();
+  }
+
+  function goHome() {
+    window.location.href = '/';
+  }
+</script>
+</body>
+</html>

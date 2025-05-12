@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Costaleros</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+
+    <h1>Bienvenido a la gestion interna de entreVarales</h1>
+
+    <div class="button-container">
+        <nav>
+            <button onclick="window.location.href='/costaleros'">Ver Lista de Costaleros</button>
+            <button onclick="window.location.href='/costaleros/mostrarFormularioCrear'">Crear Nuevo Costalero</button>
+            <button onclick="window.location.href='/costaleros/mostrarFormularioBusqueda'">Buscar Costalero</button>
+        </nav>
+    </div>
+
+    <!-- Navegación -->
+    <div class="nav-buttons">
+        <button onclick="goHome()">Volver al menú principal</button>
+    </div>
+
+    <!-- Código JavaScript -->
+    <script>
+        function goHome() {
+            window.location.href = '/'; // Volver al menú principal
+        }
+    </script>
+
+</body>
+</html>

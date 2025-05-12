@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Formulario Costalero</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+<h1 th:text="${costalero.dniCostalero == null} ? 'Crear Costalero' : 'Editar Costalero'"></h1>
+
+<form th:action="${costalero.dniCostalero == null} ? @{/costaleros/crear} : @{/costaleros/actualizar}" th:object="${costalero}" method="post">
+  <label>DNI:</label>
+  <input type="text" th:field="*{dniCostalero}" required/>
+  <label>Nombre:</label>
+  <input type="text" th:field="*{nombreCostalero}" required/>
+  <label>Apellido:</label>
+  <input type="text" th:field="*{apellidoCostalero}" required/>
+  <label>Trabajadera Nº:</label>
+  <input type="number" th:field="*{numTrabajadera}" required/>
+  <label>Altura:</label>
+  <select th:field="*{tipoAltura}">
+    <option value="ALTA">ALTA</option>
+    <option value="BAJA">BAJA</option>
+  </select>
+  <label>ID Paso:</label>
+  <input type="number" th:field="*{idPaso}" required/>
+
+  <input type="submit" value="Guardar"/>
+</form>
+
+<!-- Navegación -->
+<button onclick="goBack()">Volver a la página anterior</button>
+<button onclick="goHome()">Volver al menú principal</button>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    function goHome() {
+        window.location.href = '/';
+    }
+</script>
+</body>
+</html>

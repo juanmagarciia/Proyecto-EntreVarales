@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Interna EntreVarales</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css?v=3}">
+</head>
+<body>
+
+    <h1>Bienvenido a la gestion interna de entreVarales</h1>
+
+    <div class="button-container">
+        <nav>
+        	<button onclick="window.location.href='/costaleros/inicio'">Costaleros</button>
+        	<button onclick="window.location.href='/aspirantes/inicio'">Aspirantes</button>
+        	<button onclick="window.location.href='/capataces/inicio'">Capataces</button>
+        	
+        </nav>
+    </div>
+    
+     <div class="button-container">
+        <nav>
+    		<button onclick="window.location.href='/costaleros/cuadrante'">Ver Cuandrante de Costaleros</button>
+        	
+		</nav>
+    </div>
+   
+    <!-- Código JavaScript -->
+    <script>
+        function goHome() {
+            window.location.href = '/'; // Volver al menú principal
+        }
+    </script>
+
+</body>
+</html>

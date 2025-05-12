@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Buscar Costalero</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+<h1>Buscar Costalero por DNI</h1>
+<form action="/costaleros/buscar" method="get">
+  <label>DNI:</label>
+  <input type="text" name="dni" required/>
+  <input type="submit" value="Buscar"/>
+</form>
+<!-- Navegación -->
+<button onclick="goBack()">Volver a la página anterior</button>
+<button onclick="goHome()">Volver al menú principal</button>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    function goHome() {
+        window.location.href = '/';
+    }
+</script>
+</body>
+</html>

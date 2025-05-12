@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Capataces</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+<h1>Lista de Capataces</h1>
+
+<!-- Mostrar mensajes -->
+<div th:if="${error}" style="color: red;">
+    <p th:text="${error}"></p>
+</div>
+<div th:if="${success}" style="color: green;">
+    <p th:text="${success}"></p>
+</div>
+
+<!-- Tabla de capataces -->
+<table border="1">
+    <thead>
+    <tr>
+        <th>Nombre de Usuario</th>
+        <th>DNI</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Puesto</th>
+        <th>Nombre Paso</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="capataz : ${capataces}">
+        <td th:text="${capataz.user.username}"></td>
+        <td th:text="${capataz.dniCapataz}"></td>
+        <td th:text="${capataz.nombreCapataz}"></td>
+        <td th:text="${capataz.apellidoCapataz}"></td>
+        <td th:text="${capataz.puestoCapataz}"></td>
+        <td th:text="${capataz.paso.nombreTitular}"></td>
+        <td>
+            <form th:action="@{/capataces/editar}" method="get" style="display:inline;">
+                <input type="hidden" name="dni" th:value="${capataz.dniCapataz}">
+                <button type="submit">Editar</button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/capataces/eliminar}" method="get" style="display:inline; ">
+                <input type="hidden" name="dni" th:value="${capataz.dniCapataz}">
+                <button type="submit" onclick="return confirm('¿Estás seguro de que quieres eliminar a este capataz?');">Eliminar</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+<!-- Navegación -->
+<button onclick="goBack()">Volver a la página anterior</button>
+<button onclick="goHome()">Volver al menú principal</button>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    function goHome() {
+        window.location.href = '/';
+    }
+</script>
+</body>
+</html>

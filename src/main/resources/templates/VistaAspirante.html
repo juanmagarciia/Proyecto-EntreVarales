@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio Aspirante</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>
+            Actualmente eres aspirante del paso de 
+            <span th:text="${aspirante.paso.nombrePaso}">[Nombre Paso]</span>
+        </h4>
+        
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#aspiranteModal">
+            Ver detalles
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="aspiranteModal" tabindex="-1" aria-labelledby="aspiranteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aspiranteModalLabel">Datos del Aspirante</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>DNI:</strong> <span th:text="${aspirante.dniAspirante}">DNI</span></p>
+                    <p><strong>Nombre:</strong> <span th:text="${aspirante.nombreAspirante}">Nombre</span></p>
+                    <p><strong>Apellidos:</strong> <span th:text="${aspirante.apellidoAspirante}">Apellidos</span></p>
+                    <p><strong>Número de trabajadera:</strong> <span th:text="${aspirante.numTrabajadera}">Trabajadera</span></p>
+                    <p><strong>Altura:</strong> <span th:text="${aspirante.tipoAltura}">Altura</span></p>
+                    <p><strong>Paso:</strong> <span th:text="${aspirante.paso.nombrePaso}">Paso</span></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

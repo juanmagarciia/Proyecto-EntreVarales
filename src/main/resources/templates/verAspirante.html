@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Ver Costalero</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<body>
+<h1>Datos del Costalero</h1>
+<div th:if="${aspirante != null}">
+<p><strong>DNI:</strong> <span th:text="${aspirante.dniAspirante}"></span></p>
+<p><strong>Nombre:</strong> <span th:text="${aspirante.nombreAspirante}"></span></p>
+<p><strong>Apellido:</strong> <span th:text="${aspirante.apellidoAspirante}"></span></p>
+<p><strong>Trabajadera Nº:</strong> <span th:text="${aspirante.numTrabajadera}"></span></p>
+<p><strong>Altura:</strong> <span th:text="${aspirante.tipoAltura}"></span></p>
+<p><strong>ID Paso:</strong> <span th:text="${aspirante.idPaso}"></span></p> 
+<p><strong>Paso al que Aspira:</strong> <span th:text="${aspirante.paso.nombreTitular}"></span></p> 
+</div>
+<div th:if="${error}">
+  <p style="color:red;" th:text="${error}"></p>
+</div>
+<!-- Navegación -->
+<button onclick="goBack()">Volver a la página anterior</button>
+<button onclick="goHome()">Volver al menú principal</button>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    function goHome() {
+        window.location.href = '/';
+    }
+</script>
+</body>
+</html>

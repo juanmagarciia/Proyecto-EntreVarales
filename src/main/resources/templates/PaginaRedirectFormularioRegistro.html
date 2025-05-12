@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Bienvenido</title>
+    <link rel="stylesheet" type="text/css" href="/css/styleRegister.css">
+</head>
+<body>
+<div>
+    <h1>Bienvenido a EntreVarales</h1>
+    <p>Selecciona una opción para continuar:</p>
+
+    <div class="button-container">
+        <button><a th:href="@{/login}" class="button">Iniciar Sesión</a></button>
+        <button><a th:href="@{/register}" class="button">Registrarse</a></button>
+    </div>
+</div>
+
+</body>
+</html>

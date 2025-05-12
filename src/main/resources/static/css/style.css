@@ -1,0 +1,172 @@
+   /* Estilos generales */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 20px;
+    background: linear-gradient(135deg, #4b79a1, #283e51);
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-decoration:none;
+/*     animation: fadeIn 0.6s ease-in-out; */
+}
+
+/* Formulario */
+form {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 400px;
+    max-width: 100%;
+    margin-bottom: 30px;
+    text-align: center;
+    animation: fadeIn 0.7s ease-in-out;
+}
+
+
+label {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    margin-top: 10px;
+    display: block;
+}
+
+/* Campos de entrada */
+input[type="text"], 
+input[type="number"], 
+select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 2px solid #dfe6e9;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilo al enfocar */
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: #3498db;
+    box-shadow: 0px 4px 10px rgba(52, 152, 219, 0.3);
+    outline: none;
+}
+
+/* Títulos */
+h1, h2, h3 {
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+/* Mensaje de error */
+p {
+    font-size: 18px;
+    color: #ffffff;
+    font-weight: bold;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Formulario de filtros */
+.filtros {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: inline-block;
+    animation: fadeIn 0.7s ease-in-out;
+}
+
+label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+select, button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin: 5px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Botón */
+button {
+    background: #ff7b00;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ff4d00;
+    transform: scale(1.05);
+}
+
+/* Tabla */
+table {
+    margin: 20px auto;
+    width: 80%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    animation: fadeIn 0.9s ease-in-out;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    text-align: center;
+}
+
+th {
+    background: rgba(255, 255, 255, 0.3);
+    color: black;
+}
+
+td {
+    transition: background 0.3s ease-in-out;
+}
+
+td:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Animación sutil en la tabla */
+@keyframes appear {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+table {
+    animation: appear 0.5s ease-in-out;
+}

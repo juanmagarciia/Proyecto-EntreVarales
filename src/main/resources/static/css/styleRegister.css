@@ -1,0 +1,155 @@
+/* -------- RESET GENERAL -------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* -------- FONDO Y CUERPO -------- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #1d2b64, #f8cdda);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* -------- ENCABEZADOS -------- */
+h1 {
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.8s ease-in-out;
+}
+
+p {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+/* -------- FORMULARIOS -------- */
+form {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 400px;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    box-shadow: 0 0 10px #ff9a00;
+    background-color: #fff;
+    color: #000;
+}
+
+/* -------- BOTONES -------- */
+button {
+    background: #ff7b00;
+    border: none;
+    padding: 12px 25px;
+    color: white;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.3s ease;
+}
+
+button:hover {
+    background: #ff4d00;
+    transform: scale(1.05);
+}
+
+/* -------- BOTÓN DE INICIO -------- */
+.button-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 1.3s ease-in-out;
+}
+
+.button-container button {
+    padding: 0;
+    background: none;
+    border: none;
+}
+
+.button-container a {
+    display: inline-block;
+    background: #ffffff33;
+    color: #fff;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.3s ease, transform 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+
+.button-container a:hover {
+    background: #ffffff55;
+    transform: translateY(-2px);
+}
+
+/* -------- MENSAJES DE ERROR -------- */
+p[style*="red"] {
+    font-weight: bold;
+    margin-top: 15px;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* -------- ANIMACIONES -------- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* -------- RESPONSIVE -------- */
+@media (max-width: 480px) {
+    form {
+        padding: 20px;
+    }
+
+    .button-container a {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+}
