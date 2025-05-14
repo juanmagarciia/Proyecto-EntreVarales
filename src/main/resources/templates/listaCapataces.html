@@ -5,8 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Capataces</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css?v=3}">
+<style>
+    /* Estilo para colocar el div de bienvenida en la esquina superior derecha */
+    .user-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        margin: 10px;
+    }
+
+    /* Estilo para el botón de bienvenida */
+    .dropbtn {
+        background-color: #ff7b00; /* Color de fondo naranja */
+        color: white;
+        padding: 10px 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    /* Cambio de color al pasar el ratón por encima del botón */
+    .dropbtn:hover {
+        background-color: #ff4d00; /* Color de fondo naranja más oscuro */
+        transform: scale(1.05); /* Efecto de aumento en el tamaño del botón */
+    }
+
+    /* Estilo para el menú desplegable */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    /* Muestra el menú cuando se hace clic en el botón */
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Estilo para los enlaces dentro del menú desplegable */
+    .dropdown-content a {
+        color: #333; /* Color de texto de los enlaces */
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        transition: background 0.3s ease;
+    }
+
+    /* Cambio de color al pasar el ratón por encima de los enlaces */
+    .dropdown-content a:hover {
+        background-color: #ff7b00; /* Color de fondo naranja */
+        color: white;
+    }
+</style>
+
 </head>
+
+
 <body>
+<!-- Header con mensaje de bienvenida y menú desplegable -->
+ 
+<div class="user-menu">
+	    <div class="dropdown">
+	        <button class="dropbtn">
+	            Bienvenido/a <span th:text="${username}">Usuario</span> ▼
+	        </button>
+	        <div class="dropdown-content">
+	            <a href="/logout">Cerrar sesión</a>
+	        </div>
+	    </div>
+	</div>
+
 <h1>Lista de Capataces</h1>
 
 <!-- Mostrar mensajes -->

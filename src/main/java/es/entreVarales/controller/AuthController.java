@@ -41,7 +41,7 @@ public class AuthController {
 
         if (loggedInUser != null) {
             session.setAttribute("user", loggedInUser);
-
+            System.out.println(loggedInUser.getUsername());
             // Redirección basada en rol
             switch (loggedInUser.getRole()) {
                 case CAPATAZ:
