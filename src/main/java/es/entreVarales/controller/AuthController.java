@@ -56,4 +56,11 @@ public class AuthController {
         model.addAttribute("error", "Usuario o contraseña incorrectos");
         return "login";
     }
+    
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();  // Invalida la sesión
+        return "redirect:/";    // Redirige al home después de hacer logout
+    }
+
 }

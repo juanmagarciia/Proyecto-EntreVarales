@@ -13,5 +13,6 @@ public interface CostaleroRepository extends JpaRepository<Costalero, String> {
 	    List<Costalero> findByPaso_IdPaso(Integer idPaso);
 	    List<Costalero> findByPaso_IdPasoAndTipoAltura(Integer idPaso, Altura.TipoAltura tipoAltura);
 	    List<Costalero> findByTipoAltura(Altura.TipoAltura tipoAltura);
+	    
 
 }

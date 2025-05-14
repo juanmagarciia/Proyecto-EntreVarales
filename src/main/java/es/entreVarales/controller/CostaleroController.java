@@ -2,6 +2,11 @@ package es.entreVarales.controller;
 
 import es.entreVarales.model.User;
 import es.entreVarales.model.User.Role;
+import es.entreVarales.exception.CostaleroException.DniInvalidoException;
+import es.entreVarales.exception.CostaleroException.NumTrabajaderaInvalidoException;
+import es.entreVarales.exception.CostaleroException.PasoInvalidoException;
+import es.entreVarales.exception.CostaleroException.TipoAlturaInvalidoException;
+import es.entreVarales.exception.CostaleroException.UsuarioInvalidoException;
 import es.entreVarales.model.Altura;
 import es.entreVarales.model.Costalero;
 import es.entreVarales.model.Paso;
@@ -62,25 +67,40 @@ public class CostaleroController {
     @GetMapping("/mostrarFormularioCrear")
     public String mostrarFormularioCrear(Model model) {
         model.addAttribute("costalero", new Costalero());
-        model.addAttribute("pasos", pasoService.findAll()); // Obtiene los pasos
-        List<User> usuariosCostaleros = userRepository.findAll().stream()
-                .filter(u -> u.getRole() == User.Role.COSTALERO)
-                .toList();
+        model.addAttribute("pasos", pasoService.findAll()); // Obtener pasos
 
-        model.addAttribute("usuarios", userRepository.findByRole(User.Role.COSTALERO));
- // Agrega los usuarios
+        // 1. Obtener todos los usuarios con rol COSTALERO
+        List<User> usuariosCostaleros = userRepository.findByRole(User.Role.COSTALERO);
 
+        // 2. Obtener usuarios que ya están asignados a un costalero
+        List<User> usuariosYaAsignados = costaleroService.findAll().stream()
+                .map(Costalero::getUser)
+                .collect(Collectors.toList());
+
+        // 3. Filtrar los usuarios que aún no han sido asignados
+        List<User> usuariosDisponibles = usuariosCostaleros.stream()
+                .filter(user -> !usuariosYaAsignados.contains(user))
+                .collect(Collectors.toList());
+
+        model.addAttribute("usuarios", usuariosDisponibles); // solo los no asignados
         return "formularioCrearCostalero";
     }
 
 
+//    @PostMapping("/crear")
+//    public String crear(@ModelAttribute Costalero costalero, Model model) {
+//        costaleroService.save(costalero);
+//        model.addAttribute("success", "Costalero creado correctamente.");
+//        return "redirect:/costaleros";
+//    }
+//    
     @PostMapping("/crear")
     public String crear(@ModelAttribute Costalero costalero, Model model) {
+        validarCostalero(costalero);
         costaleroService.save(costalero);
         model.addAttribute("success", "Costalero creado correctamente.");
         return "redirect:/costaleros";
     }
-    
     
    
 
@@ -98,10 +118,17 @@ public class CostaleroController {
     }
 
 
+//    @PostMapping("/actualizar")
+//    public String actualizar(@ModelAttribute Costalero costalero, Model model) {
+//        costaleroService.update(costalero.getDniCostalero(), costalero);
+//        model.addAttribute("success", "Costalero actualizado.");
+//        return "redirect:/costaleros";
+//    }
     @PostMapping("/actualizar")
     public String actualizar(@ModelAttribute Costalero costalero, Model model) {
+        validarCostalero(costalero);
         costaleroService.update(costalero.getDniCostalero(), costalero);
-        model.addAttribute("success", "Costalero actualizado.");
+        model.addAttribute("success", "Costalero actualizado correctamente.");
         return "redirect:/costaleros";
     }
 
@@ -199,5 +226,28 @@ public class CostaleroController {
         session.invalidate();
         return "redirect:/login?logout";
     }
+    
+    private void validarCostalero(Costalero costalero) {
+        if (costalero.getDniCostalero() == null || costalero.getDniCostalero().isEmpty()) {
+            throw new DniInvalidoException();
+        }
+
+        if (costalero.getNumTrabajadera() < 1 || costalero.getNumTrabajadera() > 10) {
+            throw new NumTrabajaderaInvalidoException(costalero.getNumTrabajadera());
+        }
+
+        if (costalero.getTipoAltura() == null) {
+            throw new TipoAlturaInvalidoException();
+        }
+
+        if (costalero.getPaso() == null) {
+            throw new PasoInvalidoException();
+        }
+
+        if (costalero.getUser() == null || costalero.getUser().getRole() != User.Role.COSTALERO) {
+            throw new UsuarioInvalidoException();
+        }
+    }
+
 
 }
