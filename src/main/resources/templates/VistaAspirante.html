@@ -2,45 +2,600 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Inicio Aspirante</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Vista Aspirante</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styleVistaAspCost.css?v=3}">
+<style>
+
+/* -------- CALENDARIO -------- */
+#calendar {
+    width: 100%;
+    margin-top: 20px;
+    color: #000;
+}
+
+#calendar table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#calendar th, #calendar td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+#calendar th {
+    background-color: #1d2b64;
+    color: white;
+    font-weight: bold;
+}
+
+#calendar td {
+    background: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#calendar td:hover {
+    background-color: #ffe0c1;
+/*     transform: scale(1.05); */
+    border: 2px solid #ff9900;
+    border-radius: 6px;
+    
+}
+
+#calendar .today {
+    background-color: #ffd699 !important;
+    border: 2px solid #ffa500;
+    font-weight: bold;
+}
+
+/* Estilo para el punto indicador de evento */
+/* Asegúrate de que estos estilos estén en tu CSS */
+.event-day {
+    position: relative;
+}
+
+.event-day::after {
+    content: "";
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: #ff7b00;
+    border-radius: 50%;
+    z-index: 1; /* Asegura que el punto esté sobre el fondo */
+}
+
+.today {
+    background-color: #ffd699 !important;
+    border: 2px solid #ffa500 !important;
+    font-weight: bold;
+}
+
+.past-day {
+    background-color: #f5f5f5 !important;
+    color: #999 !important;
+    cursor: default !important;
+}
+
+/* Puntos naranjas también visibles en días pasados con eventos */
+.past-day.event-day::after {
+    background-color: #cc6600; /* Un tono más oscuro para días pasados */
+}
+
+.note-box {
+    background: #fff7ed;
+    border: 2px solid #ff7b00;
+    border-radius: 10px;
+    padding: 12px;
+    font-family: 'Segoe UI', sans-serif;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.note-header {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #d35400;
+}
+
+.note-content {
+    min-height: 80px;
+    padding: 8px;
+    background-color: #fff;
+    border-radius: 6px;
+    outline: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.save-btn {
+    background-color: #ff7b00;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    font-size: 14px;
+    margin-top: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.save-btn:hover {
+    background-color: #ff4d00;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* Estilo para colocar el div de bienvenida en la esquina superior derecha */
+    .user-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        margin: 10px;
+    }
+
+    /* Estilo para el botón de bienvenida */
+    .dropbtn {
+        background-color: #ff7b00; /* Color de fondo naranja */
+        color: white;
+        padding: 10px 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    /* Cambio de color al pasar el ratón por encima del botón */
+    .dropbtn:hover {
+        background-color: #ff4d00; /* Color de fondo naranja más oscuro */
+        transform: scale(1.05); /* Efecto de aumento en el tamaño del botón */
+    }
+
+    /* Estilo para el menú desplegable */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    /* Muestra el menú cuando se hace clic en el botón */
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Estilo para los enlaces dentro del menú desplegable */
+    .dropdown-content a {
+        color: #333; /* Color de texto de los enlaces */
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        transition: background 0.3s ease;
+    }
+
+    /* Cambio de color al pasar el ratón por encima de los enlaces */
+    .dropdown-content a:hover {
+        background-color: #ff7b00; /* Color de fondo naranja */
+        color: white;
+    }
+    
+    
+    .popup-note {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #333;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    max-width: 300px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    z-index: 9999;
+    animation: slideIn 0.5s ease forwards;
+}
+
+.popup-close {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+    
+</style>
+
 </head>
-<body class="p-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>
-            Actualmente eres aspirante del paso de 
-            <span th:text="${aspirante.paso.nombrePaso}">[Nombre Paso]</span>
-        </h4>
+
+<body>
+<!-- Header con mensaje de bienvenida y menú desplegable -->
+ 
+<div class="user-menu">
+	    <div class="dropdown">
+	        <button class="dropbtn">
+	            Bienvenido/a <span th:text="${username}">Usuario</span> ▼
+	        </button>
+	        <div class="dropdown-content">
+	            <a href="/logout">Cerrar sesión</a>
+	        </div>
+	    </div>
+	</div>
+
+
+<h1>Panel del Aspirante</h1>
+
+<div style="padding-bottom:12px; text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);">
+<p th:if="${aspirante != null && aspirante.paso != null}">
+  Actualmente eres Aspirante del paso de <span th:text="${aspirante.paso.nombreTitular}">Nombre del Paso</span>
+</p>
+</div>
+
+
+<div style="padding-bottom:12px; text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);">
+<p th:if="${aspirante.nombreAspirante == null}">
+  ¡ IMPORTANTE ! Mande una peticion de union para poder revisar sus datos personales
+</p>
+</div>
+
+
+<!-- Botones -->
+
+<div>
+
+<div class="tooltip-container">
+    <button 
+        class="btn" 
+        th:classappend="${aspirante == null or aspirante.dniAspirante == null} ? ' disabled-button' : ''"
+        th:disabled="${aspirante == null or aspirante.dniAspirante == null}" 
+        onclick="document.getElementById('modalEditarDatos').style.display='block'">
+        Ver Datos Personales
+    </button>
+    <span  th:if="${aspirante == null or aspirante.dniAspirante == null}" class="tooltip-text">No tienes datos registrados aún, mande una petición de Unión</span>
+</div>
+<div class="tooltip-container">
+    <button
+        type="button"
+        th:classappend="${yaRegistrado} ? 'disabled-button' : ''"
+        th:attr="disabled=${yaRegistrado}"
+        th:onclick="${!yaRegistrado} ? 'document.getElementById(\'modalUnion\').style.display=\'block\'' : null">
+        Mandar Petición de Unión
+    </button>
+    <!-- Tooltip solo si está deshabilitado -->
+    <span th:if="${yaRegistrado}" class="tooltip-text">
+        Se ha aceptado su peticion de union. Revise los datos si es necesario.
+    </span>
+</div>
+
+</div>
+<div>
+	<button onclick="window.location.href='/aspirantes/cuadrante'">Ver Cuadrillas de Costaleros Actuales</button>
+	
+	<!-- Botón para abrir el calendario -->
+	<button onclick="document.getElementById('modalCalendario').style.display='block'">
+	    Abrir Calendario Personal
+	</button>
+</div>
+<!-- Modal Editar Datos -->
+<div id="modalEditarDatos" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close" onclick="document.getElementById('modalEditarDatos').style.display='none'">&times;</span>
+        <h2>Editar Mis Datos</h2>
+
+        <form th:action="@{/aspirantes/actualizarDatos}" th:object="${aspirante}" method="post">
+            <label>DNI:</label>
+            <input type="text" th:field="*{dniAspirante}" readonly /><br>
+
+            <label>Nombre:</label>
+            <input type="text" th:field="*{nombreAspirante}" required /><br>
+
+            <label>Apellido:</label>
+            <input type="text" th:field="*{apellidoAspirante}" required /><br>
+
+            <label>Nº Trabajadera:</label>
+            <input type="number" th:field="*{numTrabajadera}" min="1" max="10" required /><br>
+
+            <label>Altura:</label>
+            <select th:field="*{tipoAltura}" required>
+                <option value="ALTA" th:selected="${aspirante.tipoAltura == 'ALTA'}">Alta</option>
+                <option value="BAJA" th:selected="${aspirante.tipoAltura == 'BAJA'}">Baja</option>
+            </select><br>
+
+            <label>Paso:</label>
+            <select th:field="*{paso.idPaso}" required>
+                <option th:each="p : ${pasos}" th:value="${p.idPaso}" th:text="${p.nombreTitular}"
+                        th:selected="${aspirante.paso?.idPaso == p.idPaso}"></option>
+            </select><br><br>
+
+            <input type="submit" value="Actualizar mis datos" />
+        </form>
+    </div>
+</div>
+
+
+<!-- Modal Petición de Unión -->
+<div id="modalUnion" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="document.getElementById('modalUnion').style.display='none'">&times;</span>
+        <h2>Formulario de Petición</h2>
+        <form th:action="@{/aspirantes/crearAspiranteVista}" th:object="${aspirante}" method="post">
+<!--             <label for="user">Usuario:</label> -->
+<!--             <select id="user" th:field="*{user}" required> -->
+<!--                 <option disabled selected value="">-- Seleccione su Nombre de Usuario--</option> -->
+<!--                 <option th:each="u : ${usuarios}" th:value="${u.id}" th:text="${u.username}"></option> -->
+<!--             </select><br> -->
+
+			<label>Usuario:</label>
+            <!-- Mostrar el nombre del usuario logueado (solo texto) -->
+            <input type="text" th:value="${user.username}" disabled />
+            
+            <!-- Campo oculto con el ID del usuario para enviar al servidor -->
+            <input type="hidden" name="userId" th:value="${user.id}" />
+
+            <label>DNI:</label>
+            <input type="text" th:field="*{dniAspirante}" maxlength="9" required/><br>
+
+            <label>Nombre:</label>
+            <input type="text" th:field="*{nombreAspirante}" required/><br>
+
+            <label>Apellido:</label>
+            <input type="text" th:field="*{apellidoAspirante}" required/><br>
+
+            <label>Nº Trabajadera:</label>
+            <input type="number" th:field="*{numTrabajadera}" min="1" max="10" required/><br>
+
+            <label>Altura:</label>
+            <select th:field="*{tipoAltura}" required>
+                <option value="ALTA">Alta</option>
+                <option value="BAJA">Baja</option>
+            </select><br>
+
+            <label>Paso:</label>
+            <select th:field="*{paso.idPaso}" required>
+                <option th:each="p : ${pasos}" th:value="${p.idPaso}" th:text="${p.nombreTitular}"></option>
+            </select><br><br>
+
+            <input type="submit" value="Enviar Petición"/>
+        </form>
+    </div>
+</div>
+
+<!-- Modal del Calendario -->
+<div id="modalCalendario" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <span class="close" onclick="document.getElementById('modalCalendario').style.display='none'">&times;</span>
+        <h2>Calendario Personal</h2>
+        <div id="calendar"></div>
+<!--         <div id="note-area" style="margin-top: 20px; display: none;"> -->
+<!--             <h3>Notas para el <span id="selected-date"></span></h3> -->
+<!--             <textarea id="note-text" rows="4" style="width: 100%;"></textarea> -->
+<!--             <button style="margin-top: 10px;" onclick="saveNote()">Guardar Nota</button> -->
+<!--         </div> -->
+		<div id="note-area" style="margin-top: 20px; display: none;">
+		    <h3>Evento del <span id="selected-date"></span></h3>
+		    
+		    <div class="note-box">
+		        <div class="note-header">
+		            <span>Descripción</span>
+		        </div>
+		        <div contenteditable="true" id="note-text" class="note-content"></div>
+		    </div>
+		    
+		    <button class="save-btn" onclick="saveNote()">Guardar Evento</button>
+		</div>
+    </div>
+</div>
+
+
+<script>
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = "none";
+        }
+    }
+    
+    const calendarEl = document.getElementById('calendar');
+    const noteArea = document.getElementById('note-area');
+    const selectedDateEl = document.getElementById('selected-date');
+    const noteTextEl = document.getElementById('note-text');
+
+    const today = new Date();
+    let currentMonth = today.getMonth();
+    let currentYear = today.getFullYear();
+
+    function showCalendar(month, year) {
+        // Ajustamos el primer día (0=Domingo, 1=Lunes... 6=Sábado)
+        let firstDay = new Date(year, month).getDay();
+        // Convertimos para que Lunes sea 0, Domingo 6
+        firstDay = (firstDay + 6) % 7;
         
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#aspiranteModal">
-            Ver detalles
-        </button>
-    </div>
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                       "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        const currentDay = today.getDate();
 
-    <!-- Modal -->
-    <div class="modal fade" id="aspiranteModal" tabindex="-1" aria-labelledby="aspiranteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="aspiranteModalLabel">Datos del Aspirante</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>DNI:</strong> <span th:text="${aspirante.dniAspirante}">DNI</span></p>
-                    <p><strong>Nombre:</strong> <span th:text="${aspirante.nombreAspirante}">Nombre</span></p>
-                    <p><strong>Apellidos:</strong> <span th:text="${aspirante.apellidoAspirante}">Apellidos</span></p>
-                    <p><strong>Número de trabajadera:</strong> <span th:text="${aspirante.numTrabajadera}">Trabajadera</span></p>
-                    <p><strong>Altura:</strong> <span th:text="${aspirante.tipoAltura}">Altura</span></p>
-                    <p><strong>Paso:</strong> <span th:text="${aspirante.paso.nombrePaso}">Paso</span></p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
+        let html = `
+            <div style="text-align:center; margin-bottom: 10px;">
+                <button onclick="changeMonth(-1)">&#10094;</button>
+                <strong>${months[month]} ${year}</strong>
+                <button onclick="changeMonth(1)">&#10095;</button>
             </div>
-        </div>
-    </div>
+            <table style="width:100%; border-collapse:collapse; text-align:center;">
+                <thead>
+                    <tr>
+                        <th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th><th>Dom</th>
+                    </tr>
+                </thead>
+                <tbody><tr>
+        `;
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        let day = 1;
+        for (let i = 0; i < 6; i++) {
+            for (let j = 0; j < 7; j++) {
+                if (i === 0 && j < firstDay) {
+                    html += "<td></td>";
+                } 
+                else if (day > daysInMonth) {
+                    html += "<td></td>";
+                } 
+                else {
+                    const dateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                    const hasEvent = localStorage.getItem("note-" + dateStr) !== null;
+                    const isToday = new Date().toDateString() === new Date(year, month, day).toDateString();
+                    const isPastDay = (year < currentYear) || 
+                                     (year === currentYear && month < currentMonth) || 
+                                     (year === currentYear && month === currentMonth && day < currentDay);
+                    
+                    // Construimos las clases
+                    let classes = [];
+                    if (isToday) classes.push("today");
+                    if (hasEvent) classes.push("event-day");
+                    if (isPastDay) classes.push("past-day");
+                    
+                    // Estilos base
+                    let styles = "padding:8px; cursor:pointer; position:relative; border-radius:6px;";
+                    
+                    if (isPastDay) {
+                        styles += "background:#f5f5f5; color:#999;";
+                    } else {
+                        styles += "background:#fff; color:#000;";
+                    }
+                    
+                    if (isToday) {
+                        styles += "background:#ffd699 !important; border:2px solid #ffa500 !important;";
+                    }
+                    
+                    html += `<td class="${classes.join(' ')}" style="${styles}" onclick="${isPastDay ? '' : `selectDate('${dateStr}')`}">${day}</td>`;
+                    day++;
+                }
+            }
+            if (i < 5) html += "</tr><tr>";
+        }
+
+        html += "</tr></tbody></table>";
+        calendarEl.innerHTML = html;
+    }
+    
+    
+    function changeMonth(delta) {
+        currentMonth += delta;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        } else if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        showCalendar(currentMonth, currentYear);
+    }
+
+//     function selectDate(date) {
+//         selectedDateEl.textContent = date;
+//         noteTextEl.value = localStorage.getItem("note-" + date) || "";
+//         noteArea.style.display = "block";
+//     }
+
+function selectDate(date) {
+    selectedDateEl.textContent = date;
+    const savedNote = localStorage.getItem("note-" + date) || "";
+    document.getElementById("note-text").innerText = savedNote;
+    noteArea.style.display = "block";
+}
+
+
+//     function saveNote() {
+//         const date = selectedDateEl.textContent;
+//         const note = noteTextEl.value;
+//         localStorage.setItem("note-" + date, note);
+//         alert("Nota guardada para " + date);
+//         showCalendar(currentMonth, currentYear); // Refrescar el calendario
+//     }
+
+noteTextEl.addEventListener('input', function() {
+    const saveBtn = document.querySelector('#note-area button');
+    saveBtn.disabled = !this.value.trim();
+});
+
+// Y modifica la función saveNote para prevenir doble verificación
+// function saveNote() {
+//     const date = selectedDateEl.textContent;
+//     const note = noteTextEl.value.trim();
+    
+//     if (!note) return; // Esto sería redundante con el botón deshabilitado pero es buena práctica
+    
+//     localStorage.setItem("note-" + date, note);
+//     alert("	Evento guardado para el " + date);
+//     showCalendar(currentMonth, currentYear);
+    
+//     // Deshabilitar el botón de nuevo después de guardar
+//     document.querySelector('#note-area button').disabled = true;
+// }
+
+function saveNote() {
+    const date = selectedDateEl.textContent;
+    const note = document.getElementById("note-text").innerText.trim();
+
+    if (!note) return;
+
+    localStorage.setItem("note-" + date, note);
+    alert("Evento guardado para el " + date);
+    showCalendar(currentMonth, currentYear);
+}
+
+
+    showCalendar(currentMonth, currentYear);
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date();
+        const dateStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+        const note = localStorage.getItem("note-" + dateStr);
+
+        if (note) {
+            const popup = document.createElement("div");
+            popup.className = "popup-note";
+            popup.innerHTML = `
+                <span class="popup-close" onclick="this.parentElement.remove()"></span>
+                <strong>📌 Evento de hoy</strong><br>${note}
+            `;
+            document.body.appendChild(popup);
+
+            setTimeout(() => popup.remove(), 12000);
+        }
+    });
+</script>
+
 </body>
 </html>

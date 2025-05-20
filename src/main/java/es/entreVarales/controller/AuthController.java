@@ -49,7 +49,7 @@ public class AuthController {
                 case COSTALERO:
                     return "redirect:/costaleros/dashboard";
                 case ASPIRANTE:
-                    return "redirect:/aspirantes/dashboard";
+                    return "redirect:/aspirantes/vista";
             }
         }
 

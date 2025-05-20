@@ -1,0 +1,244 @@
+/* -------- RESET GENERAL -------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* -------- FONDO Y CUERPO -------- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #1d2b64, #f8cdda);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* -------- ENCABEZADOS -------- */
+h1 {
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.8s ease-in-out;
+}
+
+h2 {
+    font-size: 1.8rem;
+    color: #1d2b64;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+/* -------- BOTONES -------- */
+button {
+    margin: 10px;
+    padding: 12px 24px;
+    background-color: #ff7b00;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #ff4d00;
+    transform: scale(1.05);
+}
+
+.disabled-button {
+    background-color: #cccccc !important;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 6px 8px;
+    position: absolute;
+    z-index: 1;
+    top: 125%; /* APARECE DEBAJO del botón */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+
+
+.tooltip-container:hover .tooltip-text + .disabled-button{
+    visibility: visible;
+    opacity: 1;
+}
+
+
+
+
+/* -------- MODALES -------- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permite que el contenido se desplace si es muy largo */
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.85); /* más transparente */
+    color: #000;
+    margin: 40px auto;
+    padding: 20px; /* menos separación interna */
+    border-radius: 12px;
+    width: 80%; /* más pequeño */
+    max-width: 450px; /* límite reducido */
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2); /* sombra más suave */
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #d10000;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #ff4d4d;
+}
+
+/* -------- CONTENIDO MODAL -------- */
+.modal-content p {
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.modal-content strong {
+    color: #333;
+}
+
+/* -------- FORMULARIO -------- */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+form label {
+    font-weight: bold;
+    color: #333;
+}
+
+form input[type="text"],
+form input[type="number"],
+form select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+}
+
+form input:focus,
+form select:focus {
+    outline: none;
+    border-color: #ff9a00;
+    box-shadow: 0 0 8px #ff9a00;
+}
+
+/* -------- BOTÓN DE ENVÍO -------- */
+form input[type="submit"] {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+form input[type="submit"]:hover {
+    background-color: #218838;
+    transform: scale(1.03);
+}
+
+/* -------- MENSAJES -------- */
+p[style*="red"] {
+    font-weight: bold;
+    margin-top: 15px;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* -------- ANIMACIONES -------- */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* -------- RESPONSIVE -------- */
+@media (max-width: 600px) {
+    body {
+        padding: 20px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    button {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    h1 {
+        font-size: 2rem;
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 1.4rem;
+    }
+}
+
+
+
+
+/* -------- POPUP NOTA DEL DÍA -------- */
+
+
+ 

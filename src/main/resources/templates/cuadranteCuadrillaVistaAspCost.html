@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cuadrante Costaleros</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styleCuadranteAspCost.css?v=3}">
+</head>
+
+
+<body>
+<!-- Header con mensaje de bienvenida y menú desplegable -->
+ 
+<div class="user-menu">
+	    <div class="dropdown">
+	        <button class="dropbtn">
+	            Bienvenido/a <span th:text="${username}">Usuario</span> ▼
+	        </button>
+	        <div class="dropdown-content">
+	            <a href="/logout">Cerrar sesión</a>
+	        </div>
+	    </div>
+	</div>
+
+
+<h1>Cuadrante por Paso y Altura</h1>
+<div th:if="${cuadrantesPorPaso.isEmpty()}">
+    <p style="text-align: center; color: red; font-size: 18px;">⚠️ No se encontraron cuadrantes con los filtros seleccionados.</p>
+</div>
+
+
+<!-- Formulario de selección de filtros -->
+<div class="filtros">
+    <form method="get" action="/aspirantes/cuadrante">
+        <label for="idPaso">Selecciona Paso:</label>
+        <select name="idPaso" id="idPaso">
+            <option value="">Todos</option>
+            <option th:each="p : ${pasos}" th:value="${p.idPaso}" th:text="${p.nombreTitular}"></option>
+        </select>
+
+        <label for="tipoAltura">Selecciona Tipo de Altura:</label>
+        <select name="tipoAltura" id="tipoAltura">
+            <option value="">Todos</option>
+            <option th:each="t : ${tiposAltura}" th:value="${t}" th:text="${t}"></option>
+        </select>
+
+        <button type="submit">Filtrar</button>
+    </form>
+</div>
+
+<!-- Mostrar cuadrantes filtrados -->
+<div th:each="entry : ${cuadrantesPorPaso}">
+    <h2 th:text="'Paso: ' + ${entry.key.nombreTitular}"></h2>
+
+    <div th:each="tipoAlturaEntry : ${entry.value}">
+        <h3 th:text="'Tipo de Altura: ' + ${tipoAlturaEntry.key}"></h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Costero Izq</th>
+                    <th>Fijador Izq</th>
+                    <th>Corriente</th>
+                    <th>Fijador Dcho</th>
+                    <th>Costero Dcho</th>
+                    <th>Trabajadera</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="trabajaderaEntry : ${tipoAlturaEntry.value}">
+                    <td th:each="i : ${#numbers.sequence(0, 4)}"
+                        th:text="${trabajaderaEntry.value.size() > i ? trabajaderaEntry.value[i]?.nombreCostalero + ' ' + trabajaderaEntry.value[i]?.apellidoCostalero : ''}">
+                    </td>
+                    <td th:text="${trabajaderaEntry.key + '°'}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #1d2b64, #f8cdda);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Títulos */
+h1, h2, h3 {
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Mensaje de error */
+p {
+    font-size: 18px;
+    color: #ff4d4d;
+    font-weight: bold;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Formulario de filtros */
+.filtros {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: inline-block;
+    animation: fadeIn 0.7s ease-in-out;
+}
+
+label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+select, button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin: 5px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Botón */
+button {
+    background: #ff7b00;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ff4d00;
+    transform: scale(1.05);
+}
+
+/* Tabla */
+table {
+    margin: 20px auto;
+    width: 80%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    animation: fadeIn 0.9s ease-in-out;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    text-align: center;
+}
+
+th {
+    background: rgba(255, 255, 255, 0.3);
+    color: black;
+}
+
+td {
+    transition: background 0.3s ease-in-out;
+}
+
+td:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Animación sutil en la tabla */
+@keyframes appear {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+table {
+    animation: appear 0.5s ease-in-out;
+}
+    /* Estilo para colocar el div de bienvenida en la esquina superior derecha */
+    .user-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        margin: 10px;
+    }
+
+    /* Estilo para el botón de bienvenida */
+    .dropbtn {
+        background-color: #ff7b00; /* Color de fondo naranja */
+        color: white;
+        padding: 10px 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    /* Cambio de color al pasar el ratón por encima del botón */
+    .dropbtn:hover {
+        background-color: #ff4d00; /* Color de fondo naranja más oscuro */
+        transform: scale(1.05); /* Efecto de aumento en el tamaño del botón */
+    }
+
+    /* Estilo para el menú desplegable */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    /* Muestra el menú cuando se hace clic en el botón */
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Estilo para los enlaces dentro del menú desplegable */
+    .dropdown-content a {
+        color: #333; /* Color de texto de los enlaces */
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        transition: background 0.3s ease;
+    }
+
+    /* Cambio de color al pasar el ratón por encima de los enlaces */
+    .dropdown-content a:hover {
+        background-color: #ff7b00; /* Color de fondo naranja */
+        color: white;
+    }
+</style>
