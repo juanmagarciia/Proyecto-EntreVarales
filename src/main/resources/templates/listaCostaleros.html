@@ -60,6 +60,107 @@
         background-color: #ff7b00; /* Color de fondo naranja */
         color: white;
     }
+    
+     /* Contenedor principal de filtros */
+#filtros {
+/*     background: rgba(255, 255, 255, 0.2); */
+/*     padding: 15px; */
+    border-radius: 10px;
+/*     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
+/*      margin: 20px auto;  */
+    animation: fadeIn 0.7s ease-in-out;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 15px;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+ #filtros form{ 
+ width:80%; 
+} 
+
+/* Grupo de filtro individual */
+.filtro-grupo {
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+    flex: 1;
+}
+
+.filtro-grupo label {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.filtro-grupo input[type="text"],
+.filtro-grupo input[type="number"],
+.filtro-grupo select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #dfe6e9;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: white;
+    color: #333;
+}
+
+/* Botones de filtro */
+.botones-filtro {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.botones-filtro button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    background: #ff7b00;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.botones-filtro button:hover {
+    background: #ff4d00;
+    transform: scale(1.05);
+}
+
+/* Estilo para el select */
+.filtro-grupo select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 15px;
+    padding-right: 30px;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .filtros {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .botones-filtro {
+        margin-left: 0;
+        margin-top: 10px;
+        justify-content: flex-end;
+    }
+   
 </style>
 
 </head>
@@ -89,6 +190,69 @@
     <p th:text="${success}"></p>
 </div>
 
+
+<!-- Filtro de búsqueda -->
+<div id="filtros">
+    <!-- Filtro de búsqueda -->
+<form th:action="@{/costaleros}" method="get" id="filtros">
+    <!-- Grupo DNI -->
+    <div class="filtro-grupo">
+        <label for="dni">DNI:</label>
+        <input type="text" id="dni" name="dni" th:value="${param.dni}">
+    </div>
+    
+    <!-- Grupo Nombre -->
+    <div class="filtro-grupo">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" th:value="${param.nombre}">
+    </div>
+    
+    <!-- Grupo Apellido -->
+    <div class="filtro-grupo">
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" name="apellido" th:value="${param.apellido}">
+    </div>
+    
+    <!-- Grupo Nº Trabajadera -->
+    <div class="filtro-grupo">
+        <label for="trabajadera">Nº Trabajadera:</label>
+        <input type="number" id="trabajadera" name="numTrabajadera" th:value="${param.numTrabajadera}">
+    </div>
+    
+    <!-- Grupo Altura -->
+    <div class="filtro-grupo">
+        <label for="altura">Altura:</label>
+        <select id="altura" name="tipoAltura">
+            <option value="">Todos</option>
+            <option value="ALTA" th:selected="${param.tipoAltura == 'ALTA'}">Alta</option>
+            <option value="BAJA" th:selected="${param.tipoAltura == 'BAJA'}">Baja</option>
+        </select>
+    </div>
+    
+    <!-- Grupo Paso -->
+    <div class="filtro-grupo">
+        <label for="paso">Paso:</label>
+        <select id="paso" name="paso">
+            <option value="">Todos</option>
+            <option th:each="paso : ${pasos}" 
+                    th:value="${paso.idPaso}" 
+                    th:text="${paso.nombreTitular}"
+                    th:selected="${param.paso != null and param.paso == paso.idPaso.toString()}">
+            </option>
+        </select>
+    </div>
+    
+    <!-- Botones -->
+    <div class="botones-filtro">
+        <button type="submit">Buscar</button>
+        <button type="button" onclick="resetFilters()">Limpiar</button>
+    </div>
+</form>
+</div>
+
+
+
+
 <!-- Tabla de costaleros -->
 <table border="1">
     <thead>
@@ -97,6 +261,7 @@
         <th>DNI</th>
         <th>Nombre</th>
         <th>Apellido</th>
+        <th>Teléfono</th>
         <th>Nº Trabajadera</th>
         <th>Altura</th>
         <th>Nombre Paso</th>
@@ -110,6 +275,7 @@
         <td th:text="${costalero.dniCostalero}"></td>
         <td th:text="${costalero.nombreCostalero}"></td>
         <td th:text="${costalero.apellidoCostalero}"></td>
+        <td th:text="${costalero.telefonoCostalero}"></td>
         <td th:text="${costalero.numTrabajadera}"></td>
         <td th:text="${costalero.tipoAltura}"></td>
         <td th:text="${costalero.paso.nombreTitular}"></td>
@@ -144,6 +310,15 @@
 
     function goHome() {
         window.location.href = '/';
+    }
+    
+    function resetFilters() {
+        document.getElementById('dni').value = '';
+        document.getElementById('nombre').value = '';
+        document.getElementById('apellido').value = '';
+        document.getElementById('numTrabajadera').value = '';
+        document.getElementById('tipoAltura').value = '';
+        document.getElementById('paso').value = '';
     }
 </script>
 </body>

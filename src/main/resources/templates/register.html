@@ -4,8 +4,28 @@
     <title>Registro</title>
     <link rel="stylesheet" type="text/css" href="/css/styleRegister.css">
     <meta charset="UTF-8">
+    
+    <style>
+    .warning-popup {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background-color: #ffdddd;
+        color: #a94442;
+        border: 1px solid #a94442;
+        padding: 10px 15px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+        font-weight: bold;
+    }
+</style>
 </head>
 <body>
+
+<div id="roleWarning" class="warning-popup" style="display: none;">
+    ⚠ Por favor, no mienta al seleccionar su rol. Verificaremos su eleccion, en caso de mentira sera expulsado inmediatamemte.
+</div>
 
     <h1>Registro de Usuario</h1>
 
@@ -17,7 +37,8 @@
         <input type="password" th:field="*{password}" placeholder="Password" required />
 
         <label for="role">Rol</label>
-        <select th:field="*{role}">
+<!--         <select th:field="*{role}"> -->
+		<select th:field="*{role}" id="roleSelect">
             <option value="CAPATAZ">Capataz</option>
             <option value="COSTALERO">Costalero</option>
             <option value="ASPIRANTE">Aspirante</option>
@@ -25,6 +46,24 @@
 
         <button type="submit">Registrarse</button>
     </form>
+
+
+
+<script>
+    function showRoleWarning() {
+        const popup = document.getElementById("roleWarning");
+        popup.style.display = "block";
+        popup.style.opacity = "1";
+
+        // Ocultar el mensaje después de 5 segundos
+        setTimeout(() => {
+            popup.style.opacity = "0";
+            setTimeout(() => popup.style.display = "none", 500); // Espera a que la opacidad llegue a 0
+        }, 5000);
+    }
+
+    document.getElementById("roleSelect").addEventListener("change", showRoleWarning);
+</script>
 
 </body>
 </html>

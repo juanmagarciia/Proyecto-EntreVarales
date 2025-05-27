@@ -91,13 +91,16 @@
     </select>
 
     <label>DNI:</label>
-    <input type="text" th:field="*{dniCapataz}" maxlength="9" required/>
+    <input type="text" th:field="*{dniCapataz}" maxlength="9" pattern="^\d{8}[A-Z]$" title="Introduce un DNI válido: 8 números seguidos de una letra mayúscula" required/>
 
     <label>Nombre:</label>
     <input type="text" th:field="*{nombreCapataz}" required/>
 
     <label>Apellido:</label>
     <input type="text" th:field="*{apellidoCapataz}" required/>
+    
+    <label>Teléfono:</label>
+    <input type="text" th:field="*{telefonoCapataz}" maxlength="9" pattern="^\d{9}$" title="Introduce un número de teléfono de 9 cifras (solo números)" required/>
 
     <label>Puesto:</label>
     <select th:field="*{puestoCapataz}" required>

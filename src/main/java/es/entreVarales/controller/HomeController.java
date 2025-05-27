@@ -39,7 +39,7 @@ public class HomeController {
 	            case CAPATAZ:
 	                return "redirect:/capataces/index";
 	            case COSTALERO:
-	                return "redirect:/costalero/home";
+	                return "redirect:/costalero/vista";
 	            case ASPIRANTE:
 	                return "redirect:/aspirantes/vista";
 	        }

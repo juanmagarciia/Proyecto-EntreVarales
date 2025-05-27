@@ -32,6 +32,9 @@ public class Aspirantes {
     @Column(nullable = false)
     private String apellidoAspirante;
 
+    @Column(nullable = false)
+    private String telefonoAspirante;
+
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false)
     private User user;
@@ -106,6 +109,14 @@ public class Aspirantes {
 	
 	public Integer getIdPaso() {
 	    return paso != null ? paso.getIdPaso() : null;
+	}
+
+	public String getTelefonoAspirante() {
+		return telefonoAspirante;
+	}
+
+	public void setTelefonoAspirante(String telefonoAspirante) {
+		this.telefonoAspirante = telefonoAspirante;
 	}
 
     

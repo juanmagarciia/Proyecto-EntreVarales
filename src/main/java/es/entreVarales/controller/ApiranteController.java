@@ -56,33 +56,66 @@ public class ApiranteController {
         return "indexAspirante";
     }
 
+//    @GetMapping
+//    public String listar(Model model) {
+//        model.addAttribute("aspirantes", aspiranteService.findAll());
+//        return "listaAspirantes";
+//    }
+
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("aspirantes", aspiranteService.findAll());
+    public String listar(
+        @RequestParam(required = false) String dni,
+        @RequestParam(required = false) String nombre,
+        @RequestParam(required = false) String apellido,
+        @RequestParam(required = false) Integer numTrabajadera,
+        @RequestParam(required = false) String tipoAltura,
+        @RequestParam(required = false) Integer paso,
+        Model model) {
+        
+        List<Aspirantes> aspirantes = aspiranteService.findAll();
+        
+        // Aplicar filtros si existen
+        if (dni != null && !dni.isEmpty()) {
+            aspirantes = aspirantes.stream()
+                .filter(a -> a.getDniAspirante().toLowerCase().contains(dni.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+        
+        if (nombre != null && !nombre.isEmpty()) {
+            aspirantes = aspirantes.stream()
+                .filter(a -> a.getNombreAspirante().toLowerCase().contains(nombre.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+        
+        if (apellido != null && !apellido.isEmpty()) {
+            aspirantes = aspirantes.stream()
+                .filter(a -> a.getApellidoAspirante().toLowerCase().contains(apellido.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+        
+        if (numTrabajadera != null) {
+            aspirantes = aspirantes.stream()
+                .filter(a -> a.getNumTrabajadera() == numTrabajadera)
+                .collect(Collectors.toList());
+        }
+        
+        if (tipoAltura != null && !tipoAltura.isEmpty()) {
+            aspirantes = aspirantes.stream()
+                .filter(a -> a.getTipoAltura().name().equals(tipoAltura))
+                .collect(Collectors.toList());
+        }
+        
+        if (paso != null) {
+            aspirantes = aspirantes.stream()
+                .filter(a -> a.getPaso().getIdPaso() == paso)
+                .collect(Collectors.toList());
+        }
+        
+        model.addAttribute("aspirantes", aspirantes);
+        model.addAttribute("pasos", pasoService.findAll()); // Para el dropdown de pasos
         return "listaAspirantes";
     }
-
-//    @GetMapping("/mostrarFormularioCrear")
-//    public String mostrarFormularioCrear(Model model) {
-//        model.addAttribute("costalero", new Costalero());
-//        model.addAttribute("pasos", pasoService.findAll()); // Obtiene los pasos
-//        Costalero costalero = new Costalero();
-//        return "formularioCrearCostalero"; // Cambiado a formularioCrearCostalero.html
-//    }
     
-//    @GetMapping("/mostrarFormularioCrear")
-//    public String mostrarFormularioCrear(Model model) {
-//        model.addAttribute("aspirante", new Aspirantes());
-//        model.addAttribute("pasos", pasoService.findAll()); // Obtiene los pasos
-//        List<User> usuariosAspirantes = userRepository.findAll().stream()
-//                .filter(u -> u.getRole() == User.Role.ASPIRANTE)
-//                .toList();
-//
-//        model.addAttribute("usuarios", userRepository.findByRole(User.Role.ASPIRANTE));
-// // Agrega los usuarios
-//
-//        return "formularioCrearAspirante";
-//    }
     @GetMapping("/mostrarFormularioCrear")
     public String mostrarFormularioCrear(Model model) {
         model.addAttribute("aspirante", new Aspirantes());

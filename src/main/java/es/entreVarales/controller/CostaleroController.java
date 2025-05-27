@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 
@@ -50,19 +51,65 @@ public class CostaleroController {
         return "indexCostalero";
     }
 
+//    @GetMapping
+//    public String listar(Model model) {
+//        model.addAttribute("costaleros", costaleroService.findAll());
+//        return "listaCostaleros";
+//    }
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("costaleros", costaleroService.findAll());
+    public String listar(
+        @RequestParam(required = false) String dni,
+        @RequestParam(required = false) String nombre,
+        @RequestParam(required = false) String apellido,
+        @RequestParam(required = false) Integer numTrabajadera,
+        @RequestParam(required = false) String tipoAltura,
+        @RequestParam(required = false) Integer paso,
+        Model model) {
+        
+        List<Costalero> costaleros = costaleroService.findAll();
+        
+        // Aplicar filtros si existen
+        if (dni != null && !dni.isEmpty()) {
+            costaleros = costaleros.stream()
+                .filter(c -> c.getDniCostalero().toLowerCase().contains(dni.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+        
+        if (nombre != null && !nombre.isEmpty()) {
+            costaleros = costaleros.stream()
+                .filter(c -> c.getNombreCostalero().toLowerCase().contains(nombre.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+        
+        if (apellido != null && !apellido.isEmpty()) {
+            costaleros = costaleros.stream()
+                .filter(c -> c.getApellidoCostalero().toLowerCase().contains(apellido.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+        
+        if (numTrabajadera != null) {
+            costaleros = costaleros.stream()
+                .filter(c -> c.getNumTrabajadera() == numTrabajadera)
+                .collect(Collectors.toList());
+        }
+        
+        if (tipoAltura != null && !tipoAltura.isEmpty()) {
+            costaleros = costaleros.stream()
+                .filter(c -> c.getTipoAltura().name().equals(tipoAltura))
+                .collect(Collectors.toList());
+        }
+        
+        if (paso != null) {
+            costaleros = costaleros.stream()
+                .filter(c -> c.getPaso().getIdPaso() == paso)
+                .collect(Collectors.toList());
+        }
+        
+        model.addAttribute("costaleros", costaleros);
+        model.addAttribute("pasos", pasoService.findAll()); // Para el dropdown de pasos
         return "listaCostaleros";
     }
 
-//    @GetMapping("/mostrarFormularioCrear")
-//    public String mostrarFormularioCrear(Model model) {
-//        model.addAttribute("costalero", new Costalero());
-//        model.addAttribute("pasos", pasoService.findAll()); // Obtiene los pasos
-//        Costalero costalero = new Costalero();
-//        return "formularioCrearCostalero"; // Cambiado a formularioCrearCostalero.html
-//    }
     
     @GetMapping("/mostrarFormularioCrear")
     public String mostrarFormularioCrear(Model model) {
@@ -247,6 +294,145 @@ public class CostaleroController {
         if (costalero.getUser() == null || costalero.getUser().getRole() != User.Role.COSTALERO) {
             throw new UsuarioInvalidoException();
         }
+    }
+    
+    
+    
+    @GetMapping("/vista")
+    public String costaleroVistaPrincipal(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null || user.getRole() != Role.COSTALERO) {
+            return "redirect:/login?unauthorized";
+        }
+
+        Costalero costalero = costaleroService.findAll().stream()
+                .filter(c -> c.getUser().getId().equals(user.getId()))
+                .findFirst()
+                .orElse(null);
+
+        model.addAttribute("costalero", costalero != null ? costalero : new Costalero());
+        model.addAttribute("usuarios", userRepository.findByRole(User.Role.COSTALERO));
+        model.addAttribute("pasos", pasoService.findAll());
+        model.addAttribute("user", user);
+        model.addAttribute("yaRegistrado", costalero != null);
+
+        return "VistaCostalero";
+    }
+
+    
+    @PostMapping("/crearCostaleroVista")
+    public String crearCostaleroVista(@ModelAttribute Costalero costalero,
+                                     @RequestParam("userId") Long userId,
+                                     RedirectAttributes redirectAttributes,
+                                     HttpSession session) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            redirectAttributes.addFlashAttribute("error", "Usuario no válido.");
+            return "redirect:/costaleros/vista";
+        }
+
+        costalero.setUser(user);
+
+        boolean yaRegistrado = costaleroService.findAll().stream()
+                .anyMatch(c -> c.getUser().getId().equals(user.getId()));
+
+        if (yaRegistrado) {
+            redirectAttributes.addFlashAttribute("error", "Ya has enviado una petición previamente.");
+            redirectAttributes.addFlashAttribute("yaRegistrado", true);
+            return "redirect:/costaleros/vista";
+        }
+
+        try {
+            validarCostalero(costalero);
+            costaleroService.save(costalero);
+            redirectAttributes.addFlashAttribute("success", "Costalero creado correctamente.");
+            redirectAttributes.addFlashAttribute("yaRegistrado", true);
+            return "redirect:/costaleros/vista";
+        } catch (DniInvalidoException | PasoInvalidoException | UsuarioInvalidoException |
+                 NumTrabajaderaInvalidoException | TipoAlturaInvalidoException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/costaleros/vista";
+        }
+    }
+
+    
+    @PostMapping("/actualizarDatos")
+    public String actualizarDatos(@ModelAttribute Costalero costalero,
+                                  HttpSession session,
+                                  RedirectAttributes redirectAttributes) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null || user.getRole() != Role.COSTALERO) {
+            return "redirect:/login?unauthorized";
+        }
+
+        Costalero costaleroExistente = costaleroService.findById(costalero.getDniCostalero()).orElse(null);
+        if (costaleroExistente == null) {
+            redirectAttributes.addFlashAttribute("error", "Costalero no encontrado.");
+            return "redirect:/costaleros/vista";
+        }
+
+        costalero.setUser(user);
+
+        try {
+            validarCostalero(costalero);
+            costaleroService.update(costalero.getDniCostalero(), costalero);
+            redirectAttributes.addFlashAttribute("success", "Datos actualizados correctamente.");
+        } catch (DniInvalidoException | PasoInvalidoException | UsuarioInvalidoException |
+                 NumTrabajaderaInvalidoException | TipoAlturaInvalidoException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/costaleros/vista";
+    }
+
+    
+    @GetMapping("/cuadranteVistaUsuario")
+    public String verCuadranteCostalero(@RequestParam(required = false) Integer idPaso,
+                               @RequestParam(required = false) String tipoAltura,
+                               Model model) {
+        List<Costalero> costaleros;
+
+        // Convertir tipoAltura a Enum si no es nulo
+        Altura.TipoAltura tipoAlturaEnum = null;
+        if (tipoAltura != null && !tipoAltura.isEmpty()) {
+            try {
+                tipoAlturaEnum = Altura.TipoAltura.valueOf(tipoAltura);
+            } catch (IllegalArgumentException e) {
+                System.out.println("⚠️ Tipo de Altura no válido: " + tipoAltura);
+            }
+        }
+
+        // Aplicar filtrado con el Enum convertido
+        if (idPaso != null && tipoAlturaEnum != null) {
+            costaleros = costaleroService.findByPasoAndTipoAltura(idPaso, tipoAlturaEnum);
+        } else if (idPaso != null) {
+            costaleros = costaleroService.findByPaso(idPaso);
+        } else if (tipoAlturaEnum != null) {
+            costaleros = costaleroService.findByTipoAltura(tipoAlturaEnum);
+        } else {
+            costaleros = costaleroService.findAll();
+        }
+
+        System.out.println("Filtrando por idPaso=" + idPaso + ", tipoAltura=" + tipoAlturaEnum);
+        System.out.println("Costaleros encontrados después del filtro: " + costaleros.size());
+
+        Map<Paso, Map<String, Map<Integer, List<Costalero>>>> cuadrantesPorPaso = new LinkedHashMap<>();
+
+        for (Costalero c : costaleros) {
+            cuadrantesPorPaso
+                .computeIfAbsent(c.getPaso(), k -> new LinkedHashMap<>())
+                .computeIfAbsent(c.getTipoAltura().name(), k -> new TreeMap<>())
+                .computeIfAbsent(c.getNumTrabajadera(), k -> new ArrayList<>())
+                .add(c);
+        }
+
+        model.addAttribute("cuadrantesPorPaso", cuadrantesPorPaso);
+        model.addAttribute("pasos", pasoService.findAll());
+        model.addAttribute("tiposAltura", List.of("ALTA", "BAJA"));
+
+        return "cuadranteCuadrillaVistaAspCost";
     }
 
 

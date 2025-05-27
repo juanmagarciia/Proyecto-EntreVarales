@@ -92,6 +92,9 @@
 
     <label>Apellido:</label>
     <input type="text" th:field="*{apellidoCapataz}" required/>
+    
+     <label>Teléfono:</label>
+    <input type="text" th:field="*{telefonoCapataz}" maxlength="9" pattern="^\d{9}$" title="Introduce un número de teléfono de 9 cifras (solo números)" required/>
 
     <label>Puesto:</label>
     <select th:field="*{puestoCapataz}" required>

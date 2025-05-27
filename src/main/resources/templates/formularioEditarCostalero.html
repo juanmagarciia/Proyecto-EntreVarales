@@ -97,6 +97,8 @@
     <input type="text" th:field="*{nombreCostalero}" required/>
     <label>Apellido:</label>
     <input type="text" th:field="*{apellidoCostalero}" required/>
+    <label>Teléfono:</label>
+    <input type="text" th:field="*{telefonoCostalero}" maxlength="9" pattern="^\d{9}$" title="Introduce un número de teléfono de 9 cifras (solo números)" required/>
     <label>Trabajadera Nº:</label>
     <input type="number" th:field="*{numTrabajadera}" required/>
     <label>Altura:</label>

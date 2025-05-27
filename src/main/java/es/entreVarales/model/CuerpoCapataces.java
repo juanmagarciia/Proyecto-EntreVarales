@@ -30,6 +30,10 @@ public class CuerpoCapataces {
 
     @Column(nullable = false)
     private String apellidoCapataz;
+    
+    @Column(nullable = false, length = 9)
+    private String telefonoCapataz;
+
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -89,6 +93,14 @@ public class CuerpoCapataces {
 
 	public void setPaso(Paso paso) {
 		this.paso = paso;
+	}
+
+	public String getTelefonoCapataz() {
+		return telefonoCapataz;
+	}
+
+	public void setTelefonoCapataz(String telefonoCapataz) {
+		this.telefonoCapataz = telefonoCapataz;
 	}
     
     

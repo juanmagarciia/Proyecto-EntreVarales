@@ -29,6 +29,9 @@ public class Costalero {
 
     @Column(nullable = false)
     private String apellidoCostalero;
+    
+    @Column(nullable = false, length = 9)
+    private String telefonoCostalero;
 
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false)
@@ -103,6 +106,14 @@ public class Costalero {
 	
 	public Integer getIdPaso() {
 	    return paso != null ? paso.getIdPaso() : null;
+	}
+
+	public String getTelefonoCostalero() {
+		return telefonoCostalero;
+	}
+
+	public void setTelefonoCostalero(String telefonoCostalero) {
+		this.telefonoCostalero = telefonoCostalero;
 	}
 
 
