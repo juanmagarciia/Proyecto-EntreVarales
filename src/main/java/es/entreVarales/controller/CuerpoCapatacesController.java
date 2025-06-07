@@ -2,6 +2,7 @@ package es.entreVarales.controller;
 
 import es.entreVarales.model.User;
 import es.entreVarales.model.User.Role;
+import es.entreVarales.model.Aspirantes;
 import es.entreVarales.model.CuerpoCapataces;
 import es.entreVarales.repository.UserRepository;
 import es.entreVarales.service.CuerpoCapatacesService;
@@ -9,6 +10,7 @@ import es.entreVarales.service.PasoService;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,21 +51,68 @@ public class CuerpoCapatacesController {
         model.addAttribute("capataz", new CuerpoCapataces());
         model.addAttribute("pasos", pasoService.findAll());
 
-        List<User> usuariosCapataz = userRepository.findAll().stream()
-                .filter(u -> u.getRole() == User.Role.CAPATAZ)
-                .toList();
+//        List<User> usuariosCapataz = userRepository.findAll().stream()
+//                .filter(u -> u.getRole() == User.Role.CAPATAZ)
+//                .toList();
+//
+//        model.addAttribute("usuarios", userRepository.findByRole(User.Role.CAPATAZ));
+        
+     // 1. Obtener todos los usuarios con rol ASPIRANTE
+        List<User> usuariosCapataces = userRepository.findByRole(User.Role.CAPATAZ);
 
-        model.addAttribute("usuarios", userRepository.findByRole(User.Role.CAPATAZ));
+        // 2. Obtener usuarios que ya están asignados a un aspirante
+        List<User> usuariosYaAsignados = capatazService.findAll().stream()
+                .map(CuerpoCapataces::getUser)
+                .collect(Collectors.toList());
+
+        // 3. Filtrar los usuarios que aún no han sido asignados
+        List<User> usuariosDisponibles = usuariosCapataces.stream()
+                .filter(user -> !usuariosYaAsignados.contains(user))
+                .collect(Collectors.toList());
+
+        model.addAttribute("usuarios", usuariosDisponibles); // solo los no asignado
 
         return "formularioCrearCapataz";
     }
 
+//    @PostMapping("/crear")
+//    public String crear(@ModelAttribute CuerpoCapataces capataz, Model model) {
+//        capatazService.save(capataz);
+//        model.addAttribute("success", "Capataz creado correctamente.");
+//        return "redirect:/capataces";
+//    }
+    
     @PostMapping("/crear")
     public String crear(@ModelAttribute CuerpoCapataces capataz, Model model) {
+        
+        // Comprobar si ya existe un capataz con ese DNI
+        if (capatazService.findById(capataz.getDniCapataz()).isPresent()) {
+            model.addAttribute("error", "Ya existe un capataz con ese DNI.");
+            
+            // 💡 IMPORTANTE: Añadir el capataz de nuevo para que Thymeleaf no falle
+            model.addAttribute("capataz", capataz);
+
+            // Volver a cargar los datos necesarios para el formulario
+            model.addAttribute("pasos", pasoService.findAll());
+
+            List<User> usuariosCapataces = userRepository.findByRole(User.Role.CAPATAZ);
+            List<User> usuariosYaAsignados = capatazService.findAll().stream()
+                    .map(CuerpoCapataces::getUser)
+                    .collect(Collectors.toList());
+            List<User> usuariosDisponibles = usuariosCapataces.stream()
+                    .filter(user -> !usuariosYaAsignados.contains(user))
+                    .collect(Collectors.toList());
+
+            model.addAttribute("usuarios", usuariosDisponibles);
+
+            return "formularioCrearCapataz";
+        }
+        
         capatazService.save(capataz);
         model.addAttribute("success", "Capataz creado correctamente.");
         return "redirect:/capataces";
     }
+
 
     @GetMapping("/editar")
     public String mostrarFormularioEditar(@RequestParam("dni") String dni, Model model) {

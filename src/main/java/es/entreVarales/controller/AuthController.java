@@ -23,9 +23,32 @@ public class AuthController {
         return "register";
     }
 
+//    @PostMapping("/register")
+//    public String register(@ModelAttribute User user) {
+//        userService.registerUser(user);
+//        return "redirect:/login";
+//    }
+    
     @PostMapping("/register")
-    public String register(@ModelAttribute User user) {
-        userService.registerUser(user);
+    public String register(@ModelAttribute User user, HttpSession session) {
+        userService.registerUser(user); // Guarda el usuario
+        User loggedInUser = userService.loginUser(user.getUsername(), user.getPassword());
+
+        if (loggedInUser != null) {
+            session.setAttribute("user", loggedInUser);
+
+            // Redirección basada en el rol
+            switch (loggedInUser.getRole()) {
+                case CAPATAZ:
+                    return "redirect:/capataces/index";
+                case COSTALERO:
+                    return "redirect:/costaleros/vista";
+                case ASPIRANTE:
+                    return "redirect:/aspirantes/vista";
+            }
+        }
+
+        // Si algo falla, regresa al login
         return "redirect:/login";
     }
 

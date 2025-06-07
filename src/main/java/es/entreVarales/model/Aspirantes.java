@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
+
 @Entity
 @Table(name = "Aspirantes")
 @Getter
@@ -25,7 +26,8 @@ public class Aspirantes {
     @Id
     @Column(nullable = false, length = 9)
     private String dniAspirante;
-
+    
+    
     @Column(nullable = false)
     private String nombreAspirante;
 

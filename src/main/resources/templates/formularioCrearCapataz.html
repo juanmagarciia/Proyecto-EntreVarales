@@ -79,11 +79,16 @@
 
 <h1>Crear Capataz</h1>
 
+<div th:if="${error}" style="color:red">
+    <p th:text="${error}"></p>
+</div>
+
+
 <form th:action="@{/capataces/crear}" th:object="${capataz}" method="post">
 
     <label for="user">Nombre de Usuario:</label>
-    <select th:field="*{user}" id="user">
-        <option value="" disabled selected>-- Selecciona tu nombre de usuario previamente creado --</option>
+    <select th:field="*{user}" id="user" required>
+        <option value=""  selected>-- Selecciona tu nombre de usuario previamente creado --</option>
         <option th:each="u : ${usuarios}" 
                 th:value="${u.id}" 
                 th:text="${u.username}">
@@ -94,17 +99,17 @@
     <input type="text" th:field="*{dniCapataz}" maxlength="9" pattern="^\d{8}[A-Z]$" title="Introduce un DNI válido: 8 números seguidos de una letra mayúscula" required/>
 
     <label>Nombre:</label>
-    <input type="text" th:field="*{nombreCapataz}" required/>
+    <input type="text" th:field="*{nombreCapataz}" maxlength="15" required/>
 
     <label>Apellido:</label>
-    <input type="text" th:field="*{apellidoCapataz}" required/>
+    <input type="text" th:field="*{apellidoCapataz}" maxlength="30" required/>
     
     <label>Teléfono:</label>
     <input type="text" th:field="*{telefonoCapataz}" maxlength="9" pattern="^\d{9}$" title="Introduce un número de teléfono de 9 cifras (solo números)" required/>
 
     <label>Puesto:</label>
     <select th:field="*{puestoCapataz}" required>
-        <option value="" disabled selected>-- Selecciona el puesto --</option>
+        <option value=""  selected>-- Selecciona el puesto --</option>
         <option value="CAPATAZ">CAPATAZ</option>
         <option value="CONTRAGUIA">CONTRAGUIA</option>
         
@@ -112,10 +117,11 @@
 
     <label>Paso:</label>
     <select th:field="*{paso.idPaso}" required>
+    	<option value=""  selected>-- Selecciona tu titular --</option>
         <option th:each="p : ${pasos}" th:value="${p.idPaso}" th:text="${p.nombreTitular}">Paso</option>
     </select>
 
-    <input type="submit" value="Crear"/>
+    <button type="submit" value="Crear">Crear</button>
 </form>
 
 <button onclick="goBack()">Volver</button>

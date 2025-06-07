@@ -153,7 +153,7 @@
 
 /* Responsividad */
 @media (max-width: 768px) {
-    .filtros {
+    #filtros {
         flex-direction: column;
         align-items: stretch;
     }
@@ -163,6 +163,77 @@
         margin-top: 10px;
         justify-content: flex-end;
     }
+}
+    
+  @media (max-width: 480px) {
+    .filtro-grupo {
+        min-width: 100%;
+    }
+
+    form {
+        width: 95%;
+    }
+
+    .dropbtn {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 768px) {
+  .tabla-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabla-responsive table {
+    width: 100%;
+    min-width: 600px; /* o el ancho mínimo necesario para que no se rompa el contenido */
+    border-collapse: collapse;
+  }
+
+  .tabla-responsive th,
+  .tabla-responsive td {
+    white-space: nowrap;
+  }
+}
+
+
+/* Estilo específico para el botón PDF */
+.btn-pdf {
+    background: #dc3545 !important;
+    color: white !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-pdf:hover {
+    background: #c82333 !important;
+}
+
+/* Icono PDF */
+.pdf-icon {
+    font-size: 14px;
+}
+
+/* Contenedor de acciones sobre la tabla */
+.tabla-acciones {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0 10px 0;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tabla-info {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
 </style>
 
 </head>
@@ -254,9 +325,25 @@
 
 
 
+<!-- Acciones sobre la tabla -->
+<div class="tabla-acciones">
+    <div class="tabla-info">
+        Total de aspirantes: <span th:text="${aspirantes.size()}">0</span>
+    </div>
+    <div>
+        <button type="button" class="btn-pdf" onclick="descargarPDF()">
+            <span class="pdf-icon">📄</span>
+            Descargar en PDF
+        </button>
+    </div>
+</div>
+
+
+
 
 
 <!-- Tabla de aspirantes -->
+<div class="tabla-responsive">
 <table border="1">
     <thead>
     <tr>
@@ -298,6 +385,7 @@
     </tr>
     </tbody>
 </table>
+</div>
 
 <br>
 
@@ -322,6 +410,45 @@
         document.getElementById('numTrabajadera').value = '';
         document.getElementById('tipoAltura').value = '';
         document.getElementById('paso').value = '';
+    }
+    
+    function descargarPDF() {
+        console.log('¡Función descargarPDF ejecutada!');
+        
+        try {
+            // Obtener parámetros de la URL actual (después de aplicar filtros)
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            console.log('Parámetros actuales de la URL:', {
+                dni: urlParams.get('dni'),
+                nombre: urlParams.get('nombre'),
+                apellido: urlParams.get('apellido'),
+                numTrabajadera: urlParams.get('numTrabajadera'),
+                tipoAltura: urlParams.get('tipoAltura'),
+                paso: urlParams.get('paso')
+            });
+            
+            // Construir URL para PDF con los mismos parámetros
+            const pdfParams = new URLSearchParams();
+            
+            // Copiar todos los parámetros existentes
+            if (urlParams.get('dni')) pdfParams.append('dni', urlParams.get('dni'));
+            if (urlParams.get('nombre')) pdfParams.append('nombre', urlParams.get('nombre'));
+            if (urlParams.get('apellido')) pdfParams.append('apellido', urlParams.get('apellido'));
+            if (urlParams.get('numTrabajadera')) pdfParams.append('numTrabajadera', urlParams.get('numTrabajadera'));
+            if (urlParams.get('tipoAltura')) pdfParams.append('tipoAltura', urlParams.get('tipoAltura'));
+            if (urlParams.get('paso')) pdfParams.append('paso', urlParams.get('paso'));
+            
+            const url = '/aspirantes/descargar-pdf?' + pdfParams.toString();
+            console.log('URL generada para PDF:', url);
+            
+            // Abrir en nueva ventana para descarga
+            window.open(url, '_blank');
+            
+        } catch (error) {
+            console.error('Error en descargarPDF:', error);
+            alert('Error al generar el PDF: ' + error.message);
+        }
     }
 </script>
 </body>

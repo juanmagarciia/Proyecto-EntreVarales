@@ -62,4 +62,12 @@ public class AspiranteException extends RuntimeException {
             super("El número de trabajadera debe estar entre 1 y 10. Valor recibido: " + num);
         }
     }
+    
+    // Excepción: Número de trabajadera inválido
+    public static class AlturaInvalidaException extends AspiranteException {
+        public AlturaInvalidaException() {
+        	 super("Debe seleccionar una altura.");
+        }
+    }
+    
 }

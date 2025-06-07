@@ -43,4 +43,8 @@ public class CuerpoCapatacesService {
         }
         throw new RuntimeException("Capataz no encontrado con DNI: " + dni);
     }
+    
+    public boolean existsByDni(String dni) {
+        return cuerpoCapatacesRepository.existsById(dni);
+    }
 }

@@ -304,10 +304,10 @@
             <input type="text" th:field="*{dniAspirante}" readonly /><br>
 
             <label>Nombre:</label>
-            <input type="text" th:field="*{nombreAspirante}" required /><br>
+            <input type="text" th:field="*{nombreAspirante}" maxlength="15" required /><br>
 
             <label>Apellidos:</label>
-            <input type="text" th:field="*{apellidoAspirante}" required /><br>
+            <input type="text" th:field="*{apellidoAspirante}" maxlength="30" required /><br>
 
 			<label>Teléfono:</label>
             <input type="text" th:field="*{telefonoAspirante}" maxlength="9" pattern="^\d{9}$" title="Introduce un número de teléfono de 9 cifras (solo números)" required /><br>
@@ -356,10 +356,10 @@
             <input type="text" th:field="*{dniAspirante}" maxlength="9" pattern="^\d{8}[A-Z]$" title="Introduce un DNI válido: 8 números seguidos de una letra mayúscula" required/><br>
 
             <label>Nombre:</label>
-            <input type="text" th:field="*{nombreAspirante}" required/><br>
+            <input type="text" th:field="*{nombreAspirante}" maxlength="15" required/><br>
 
             <label>Apellidos:</label>
-            <input type="text" th:field="*{apellidoAspirante}" required/><br>
+            <input type="text" th:field="*{apellidoAspirante}" maxlength="30" required/><br>
 
 			<label>Teléfono:</label>
             <input type="text" th:field="*{telefonoAspirante}" maxlength="9" pattern="^\d{9}$" title="Introduce un número de teléfono de 9 cifras (solo números)" required /><br>

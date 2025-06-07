@@ -305,10 +305,10 @@
             <input type="text" th:field="*{dniCostalero}" readonly /><br>
 
             <label>Nombre:</label>
-            <input type="text" th:field="*{nombreCostalero}" required /><br>
+            <input type="text" th:field="*{nombreCostalero}" maxlength="15" required /><br>
 
             <label>Apellido:</label>
-            <input type="text" th:field="*{apellidoCostalero}" required /><br>
+            <input type="text" th:field="*{apellidoCostalero}"  maxlength="30" required /><br>
             
             <label>Teléfono:</label>
             <input type="text" th:field="*{telefonoCostalero}" maxlength="9" pattern="^\d{9}$" title="Introduce un número de teléfono de 9 cifras (solo números)" required /><br>
@@ -351,10 +351,10 @@
             <input type="text" th:field="*{dniCostalero}" maxlength="9" pattern="^\d{8}[A-Z]$" title="Introduce un DNI válido: 8 números seguidos de una letra mayúscula" required/><br>
 
             <label>Nombre:</label>
-            <input type="text" th:field="*{nombreCostalero}" required/><br>
+            <input type="text" th:field="*{nombreCostalero}" maxlength="15" required/><br>
 
             <label>Apellido:</label>
-            <input type="text" th:field="*{apellidoCostalero}" required/><br>
+            <input type="text" th:field="*{apellidoCostalero}" maxlength="30" required/><br>
             
             <label>Teléfono:</label>
             <input type="text" th:field="*{telefonoCostalero}" maxlength="9" pattern="^\d{9}$" title="Introduce un número de teléfono de 9 cifras (solo números)" required /><br>

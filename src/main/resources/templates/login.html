@@ -17,10 +17,17 @@
         <input type="password" th:field="*{password}" placeholder="Password" required />
 
         <button type="submit">Login</button>
+        <button onclick="goBack()">Volver</button>
     </form>
 
     <p th:if="${error}" th:text="${error}" style="color: red;"></p>
     <p th:if="${param.unauthorized}" style="color: red;">Acceso no autorizado</p>
 
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
 </body>
 </html>

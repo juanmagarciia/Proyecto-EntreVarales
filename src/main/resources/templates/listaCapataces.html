@@ -60,6 +60,54 @@
         background-color: #ff7b00; /* Color de fondo naranja */
         color: white;
     }
+    
+    /* Responsividad */
+@media (max-width: 768px) {
+    #filtros {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .botones-filtro {
+        margin-left: 0;
+        margin-top: 10px;
+        justify-content: flex-end;
+    }
+}
+    
+  @media (max-width: 480px) {
+    .filtro-grupo {
+        min-width: 100%;
+    }
+
+    form {
+        width: 95%;
+    }
+
+    .dropbtn {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+}
+
+@media (max-width: 768px) {
+  .tabla-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabla-responsive table {
+    width: 100%;
+    min-width: 600px; /* o el ancho mínimo necesario para que no se rompa el contenido */
+    border-collapse: collapse;
+  }
+
+  .tabla-responsive th,
+  .tabla-responsive td {
+    white-space: nowrap;
+  }
+}
 </style>
 
 </head>
@@ -90,6 +138,7 @@
 </div>
 
 <!-- Tabla de capataces -->
+<div class="tabla-responsive">
 <table border="1">
     <thead>
     <tr>
@@ -128,7 +177,7 @@
     </tr>
     </tbody>
 </table>
-
+</div>
 <br>
 
 <!-- Navegación -->

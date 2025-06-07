@@ -79,11 +79,15 @@
 
 <h1>Crear Aspirante</h1>
 
+<div th:if="${error}" style="color:red">
+    <p th:text="${error}"></p>
+</div>
+
 <form th:action="@{/aspirantes/crear}" th:object="${aspirante}" method="post">
 
  <label for="user">Nombre de Usuario:</label>
-    <select th:field="*{user}" id="user">
-        <option value="" disabled selected>-- Selecciona tu nombre de usuario previamente creado --</option>
+    <select th:field="*{user}" id="user" required>
+		 <option value="" selected>-- Selecciona tu nombre de usuario previamente creado --</option>
         <option th:each="u : ${usuarios}" 
                 th:value="${u.id}" 
                 th:text="${u.username}">
@@ -92,25 +96,28 @@
     <label>DNI:</label>
     <input type="text" th:field="*{dniAspirante}" maxlength="9" pattern="^\d{8}[A-Z]$" title="Introduce un DNI válido: 8 números seguidos de una letra mayúscula" required/>
     <label>Nombre:</label>
-    <input type="text" th:field="*{nombreAspirante}" required/>
+    <input type="text" th:field="*{nombreAspirante}" maxlength="15" required/>
     <label>Apellidos:</label>
-    <input type="text" th:field="*{apellidoAspirante}" required/>
+    <input type="text" th:field="*{apellidoAspirante}" maxlength="30" required/>
     <label>Teléfono:</label>
     <input type="text" th:field="*{telefonoAspirante}" maxlength="9" pattern="^\d{9}$" title="Introduce un número de teléfono de 9 cifras (solo números)" required/>
     <label>Trabajadera Nº:</label>
     <input type="number" th:field="*{numTrabajadera}" required/>
     <label>Altura:</label>
-    <select th:field="*{tipoAltura}">
+    <select th:field="*{tipoAltura}" required>
+    	<option value=""  selected>-- Selecciona tu altura --</option>
         <option value="ALTA">ALTA</option>
         <option value="BAJA">BAJA</option>
     </select>
     <label>Paso:</label>
+    
 	<select th:field="*{paso.idPaso}" required>
+	<option value=""  selected>-- Selecciona tu titular --</option>
     <option th:each="p : ${pasos}" th:value="${p.idPaso}" th:text="${p.nombreTitular}">Paso</option>
 </select>
 
 
-    <input type="submit" value="Crear"/>
+    <button type="submit" value="Crear">Crear</button>
 </form>
 
 <button onclick="goBack()">Volver</button>

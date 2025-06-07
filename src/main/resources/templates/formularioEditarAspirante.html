@@ -94,9 +94,9 @@
     <label>DNI:</label>
     <input type="text" th:field="*{dniAspirante}" readonly/>
     <label>Nombre:</label>
-    <input type="text" th:field="*{nombreAspirante}" required/>
+    <input type="text" th:field="*{nombreAspirante}" maxlength="15" required/>
     <label>Apellido:</label>
-    <input type="text" th:field="*{apellidoAspirante}" required/>
+    <input type="text" th:field="*{apellidoAspirante}" maxlength="30" required/>
     <label>Teléfono:</label>
     <input type="text" th:field="*{telefonoAspirante}" maxlength="9" pattern="^\d{9}$" title="Introduce un número de teléfono de 9 cifras (solo números)" required/>
     <label>Trabajadera Nº:</label>
@@ -110,7 +110,7 @@
 	<select th:field="*{paso.idPaso}" required>
     <option th:each="p : ${pasos}" th:value="${p.idPaso}" th:text="${p.nombreTitular}">Paso</option>
 </select>
-    <input type="submit" value="Actualizar"/>
+    <button type="submit" value="Actualizar">Actualizar</button>
 </form>
 
 <button onclick="goBack()">Volver</button>

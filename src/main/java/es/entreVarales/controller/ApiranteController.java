@@ -3,6 +3,7 @@ package es.entreVarales.controller;
 import es.entreVarales.model.User;
 import es.entreVarales.model.User.Role;
 import es.entreVarales.exception.AspiranteException;
+import es.entreVarales.exception.AspiranteException.AlturaInvalidaException;
 import es.entreVarales.exception.AspiranteException.DniInvalidoException;
 import es.entreVarales.exception.AspiranteException.NumTrabajaderaInvalidoException;
 import es.entreVarales.exception.AspiranteException.PasoInvalidoException;
@@ -15,8 +16,12 @@ import es.entreVarales.repository.UserRepository;
 import es.entreVarales.service.AspiranteService;
 import es.entreVarales.service.CostaleroService;
 import es.entreVarales.service.PasoService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,6 +34,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 
 
 
@@ -139,27 +156,58 @@ public class ApiranteController {
     }
 
 
+
 //    @PostMapping("/crear")
 //    public String crear(@ModelAttribute Aspirantes aspirante, Model model) {
-//    	aspiranteService.save(aspirante);
-//        model.addAttribute("success", "Aspirante creado correctamente.");
-//        return "redirect:/aspirantes";
+//        try {
+//            // Validar los datos del aspirante
+//            validarAspirante(aspirante);
+//            
+//            // Si la validación es correcta, guardar el aspirante
+//            aspiranteService.save(aspirante);
+//            model.addAttribute("success", "Aspirante creado correctamente.");
+//            return "redirect:/aspirantes";
+//        } catch (DniInvalidoException | PasoInvalidoException | UsuarioInvalidoException e) {
+//            // Si se lanza alguna excepción de validación, mostrar el mensaje de error
+//            model.addAttribute("error", e.getMessage());
+//            return "formularioCrearAspirante";  // Regresar al formulario con el mensaje de error
+//        }
 //    }
+    
+    
     @PostMapping("/crear")
     public String crear(@ModelAttribute Aspirantes aspirante, Model model) {
-        try {
-            // Validar los datos del aspirante
-            validarAspirante(aspirante);
+        
+        // Comprobar si ya existe un capataz con ese DNI
+        if (aspiranteService.findById(aspirante.getDniAspirante()).isPresent()) {
+            model.addAttribute("error", "Ya existe un aspirante con ese DNI.");
             
-            // Si la validación es correcta, guardar el aspirante
-            aspiranteService.save(aspirante);
-            model.addAttribute("success", "Aspirante creado correctamente.");
-            return "redirect:/aspirantes";
-        } catch (DniInvalidoException | PasoInvalidoException | UsuarioInvalidoException e) {
-            // Si se lanza alguna excepción de validación, mostrar el mensaje de error
-            model.addAttribute("error", e.getMessage());
-            return "formularioCrearAspirante";  // Regresar al formulario con el mensaje de error
+            
+            model.addAttribute("aspirante", aspirante);
+
+            // Volver a cargar los datos necesarios para el formulario
+            model.addAttribute("pasos", pasoService.findAll());
+
+            List<User> usuariosAspirante = userRepository.findByRole(User.Role.ASPIRANTE);
+            List<User> usuariosYaAsignados = aspiranteService.findAll().stream()
+                    .map(Aspirantes::getUser)
+                    .collect(Collectors.toList());
+            List<User> usuariosDisponibles = usuariosAspirante.stream()
+                    .filter(user -> !usuariosYaAsignados.contains(user))
+                    .collect(Collectors.toList());
+
+            model.addAttribute("usuarios", usuariosDisponibles);
+
+            return "formularioCrearAspirante";
         }
+        
+     
+	     validarAspirante(aspirante);
+	   
+	
+	     aspiranteService.save(aspirante);
+	     model.addAttribute("success", "Aspirante creado correctamente.");
+	      return "redirect:/aspirantes";
     }
     
     
@@ -174,7 +222,7 @@ public class ApiranteController {
         }
         model.addAttribute("aspirante", aspirante);
         model.addAttribute("pasos", pasoService.findAll());
-        model.addAttribute("usuarios", userRepository.findAll()); // <- esto falta
+        model.addAttribute("usuarios", userRepository.findAll()); 
         return "formularioEditarAspirante";
     }
 
@@ -340,14 +388,18 @@ public class ApiranteController {
         }
 
         // Validación del paso asignado
-        if (aspirante.getPaso() == null) {
+        if (aspirante.getPaso() == null || aspirante.getPaso().getIdPaso() == null) {
             throw new PasoInvalidoException();
         }
 
 
-        // Validación del usuario asignado
-        if (aspirante.getUser() == null || aspirante.getUser().getRole() != User.Role.ASPIRANTE) {
-            throw new UsuarioInvalidoException();
+//        // Validación del usuario asignado
+//        if (aspirante.getUser() == null || aspirante.getUser().getRole() != User.Role.ASPIRANTE || aspirante.getUser().getId() == null) {
+//            throw new UsuarioInvalidoException();
+//        }
+        
+        if (aspirante.getTipoAltura() == null) {
+            throw new AlturaInvalidaException();
         }
     }
     
@@ -398,4 +450,203 @@ public class ApiranteController {
 
         return "cuadranteCuadrillaVistaAspCost";
     }
+    
+    
+    
+    
+    
+    
+    
+    @GetMapping("/descargar-pdf")
+    public void descargarPDF(
+        @RequestParam(required = false) String dni,
+        @RequestParam(required = false) String nombre,
+        @RequestParam(required = false) String apellido,
+        @RequestParam(required = false) Integer numTrabajadera,
+        @RequestParam(required = false) String tipoAltura,
+        @RequestParam(required = false) Integer paso,
+        HttpServletResponse response) throws IOException, DocumentException {
+        
+        // Aplicar los mismos filtros que en el método listar
+        List<Aspirantes> aspirantes = aspiranteService.findAll();
+        
+        if (dni != null && !dni.isEmpty()) {
+            aspirantes = aspirantes.stream()
+                .filter(c -> c.getDniAspirante().toLowerCase().contains(dni.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+        
+        if (nombre != null && !nombre.isEmpty()) {
+        	aspirantes = aspirantes.stream()
+                .filter(c -> c.getNombreAspirante().toLowerCase().contains(nombre.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+        
+        if (apellido != null && !apellido.isEmpty()) {
+        	aspirantes = aspirantes.stream()
+                .filter(c -> c.getApellidoAspirante().toLowerCase().contains(apellido.toLowerCase()))
+                .collect(Collectors.toList());
+        }
+        
+        if (numTrabajadera != null) {
+        	aspirantes = aspirantes.stream()
+                .filter(c -> c.getNumTrabajadera() == numTrabajadera)
+                .collect(Collectors.toList());
+        }
+        
+        if (tipoAltura != null && !tipoAltura.isEmpty()) {
+        	aspirantes = aspirantes.stream()
+                .filter(c -> c.getTipoAltura().name().equals(tipoAltura))
+                .collect(Collectors.toList());
+        }
+        
+        if (paso != null) {
+        	aspirantes = aspirantes.stream()
+                .filter(c -> c.getPaso().getIdPaso() == paso)
+                .collect(Collectors.toList());
+        }
+
+        // Configurar la respuesta HTTP
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=\"aspirantes_" + 
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")) + ".pdf\"");
+
+        // Crear el documento PDF
+        Document document = new Document(PageSize.A4.rotate()); // Formato horizontal para mejor visualización
+        PdfWriter.getInstance(document, response.getOutputStream());
+        
+        document.open();
+
+        // Título del documento
+        Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
+        Paragraph title = new Paragraph("Lista de Aspirantes", titleFont);
+        title.setAlignment(Element.ALIGN_CENTER);
+        title.setSpacingAfter(20);
+        document.add(title);
+
+        // Información de filtros aplicados
+        if (hayFiltrosAplicados(dni, nombre, apellido, numTrabajadera, tipoAltura, paso)) {
+            Font filterFont = new Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC);
+            Paragraph filtros = new Paragraph("Filtros aplicados: " + construirTextoFiltros(dni, nombre, apellido, numTrabajadera, tipoAltura, paso), filterFont);
+            filtros.setSpacingAfter(15);
+            document.add(filtros);
+        }
+
+        // Fecha de generación
+        Font dateFont = new Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL);
+        Paragraph fecha = new Paragraph("Generado el: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")), dateFont);
+        fecha.setAlignment(Element.ALIGN_RIGHT);
+        fecha.setSpacingAfter(20);
+        document.add(fecha);
+
+        // Crear tabla
+        PdfPTable table = new PdfPTable(8); // 8 columnas
+        table.setWidthPercentage(100);
+        
+        // Definir anchos de columnas
+        float[] columnWidths = {15f, 12f, 15f, 15f, 12f, 8f, 8f, 15f};
+        table.setWidths(columnWidths);
+
+        // Estilo para headers
+        Font headerFont = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.WHITE);
+        BaseColor headerBackground = new BaseColor(255, 123, 0); // Color naranja
+
+        // Headers de la tabla
+        String[] headers = {"Usuario", "DNI", "Nombre", "Apellido", "Teléfono", "Nº Trab.", "Altura", "Paso"};
+        
+        for (String header : headers) {
+            PdfPCell cell = new PdfPCell(new Phrase(header, headerFont));
+            cell.setBackgroundColor(headerBackground);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setPadding(8);
+            table.addCell(cell);
+        }
+
+        // Estilo para datos
+        Font dataFont = new Font(Font.FontFamily.HELVETICA, 9, Font.NORMAL);
+        BaseColor alternateRowColor = new BaseColor(245, 245, 245);
+
+        // Agregar datos
+        int rowIndex = 0;
+        for (Aspirantes aspirante : aspirantes) {
+            BaseColor rowColor = (rowIndex % 2 == 0) ? BaseColor.WHITE : alternateRowColor;
+            
+            // Datos de cada costalero
+            String[] rowData = {
+            		aspirante.getUser() != null ? aspirante.getUser().getUsername() : "N/A",
+            				aspirante.getDniAspirante(),
+            				aspirante.getNombreAspirante(),
+            				aspirante.getApellidoAspirante(),
+            				aspirante.getTelefonoAspirante(),
+                String.valueOf(aspirante.getNumTrabajadera()),
+                aspirante.getTipoAltura().toString(),
+                aspirante.getPaso() != null ? aspirante.getPaso().getNombreTitular() : "N/A"
+            };
+
+            for (String data : rowData) {
+                PdfPCell cell = new PdfPCell(new Phrase(data != null ? data : "N/A", dataFont));
+                cell.setBackgroundColor(rowColor);
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(5);
+                table.addCell(cell);
+            }
+            rowIndex++;
+        }
+
+        document.add(table);
+
+        // Resumen
+        Paragraph resumen = new Paragraph("\nTotal de costaleros: " + aspirantes.size(), 
+            new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD));
+        resumen.setSpacingBefore(20);
+        document.add(resumen);
+
+        document.close();
+    }
+
+    // Métodos auxiliares
+    private boolean hayFiltrosAplicados(String dni, String nombre, String apellido, 
+                                       Integer numTrabajadera, String tipoAltura, Integer paso) {
+        return (dni != null && !dni.isEmpty()) ||
+               (nombre != null && !nombre.isEmpty()) ||
+               (apellido != null && !apellido.isEmpty()) ||
+               numTrabajadera != null ||
+               (tipoAltura != null && !tipoAltura.isEmpty()) ||
+               paso != null;
+    }
+
+    private String construirTextoFiltros(String dni, String nombre, String apellido, 
+                                       Integer numTrabajadera, String tipoAltura, Integer paso) {
+        List<String> filtros = new ArrayList<>();
+        
+        if (dni != null && !dni.isEmpty()) filtros.add("DNI: " + dni);
+        if (nombre != null && !nombre.isEmpty()) filtros.add("Nombre: " + nombre);
+        if (apellido != null && !apellido.isEmpty()) filtros.add("Apellido: " + apellido);
+        if (numTrabajadera != null) filtros.add("Nº Trabajadera: " + numTrabajadera);
+        if (tipoAltura != null && !tipoAltura.isEmpty()) filtros.add("Altura: " + tipoAltura);
+        if (paso != null) {
+            // Buscar el nombre del paso
+//            Paso pasoObj = pasoService.findById(paso).orElse(null);
+       	 Paso pasoObj = pasoService.findById(paso.longValue()).orElse(null);
+            String nombrePaso = pasoObj != null ? pasoObj.getNombreTitular() : String.valueOf(paso);
+            filtros.add("Paso: " + nombrePaso);
+        }
+        
+        return String.join(", ", filtros);
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
